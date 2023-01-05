@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Régression Linéaire &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Attributs &amp; Statistiques Résultantes" href="statistics.html" />
+    <link rel="prev" title="Introduction" href="intro1.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="statistics.html">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="OLS.html">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="GLS.html">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/GLM.html">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/MLG.html">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Decomposition.html">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/autoregression.html">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/ANOVA.html">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FRegression/regression.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/Regression/regression.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#moindres-carres-ordinaires-ols">
+   Moindres Carrés Ordinaires (OLS)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#moindres-carres-ponderes-wls">
+   Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#moindres-carres-generalises-gls">
+   Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Régression Linéaire</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#moindres-carres-ordinaires-ols">
+   Moindres Carrés Ordinaires (OLS)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#moindres-carres-ponderes-wls">
+   Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#moindres-carres-generalises-gls">
+   Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="regression-lineaire">
+<h1>Régression Linéaire<a class="headerlink" href="#regression-lineaire" title="Permalink to this headline">#</a></h1>
+<p>La régression linéaire est une approche consistant à modéliser la relation entre une variable de réponse et une ou plusieurs variables explicatives (également appelées respectivement variables dépendantes et indépendantes). Le cas d’une seule variable explicative est appelé <strong>régression linéaire simple</strong>; pour plusieurs, le modèle correspond à une <strong>régression linéaire multiple</strong>.</p>
+<p>Étant donné un échantillon <span class="math notranslate nohighlight">\(\{y_{i},\,x_{i1},\ldots ,x_{ip}\}_{i=1}^{n}\)</span> de <span class="math notranslate nohighlight">\(n\)</span> unités statistiques, un modèle de régression linéaire suppose que la relation entre la variable de réponse <span class="math notranslate nohighlight">\(y\)</span> et le vecteur de <span class="math notranslate nohighlight">\(p\)</span> variables régresseurs <span class="math notranslate nohighlight">\(x\)</span> est linéaire. Cette relation est modélisée à travers un terme d’erreur ou de bruit <span class="math notranslate nohighlight">\(\varepsilon\)</span> représentée par une variable aléatoire non observée.</p>
+<p>Le modèle s’écrit ainsi :</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle y_{i}=\beta _{0}+\beta _{1}x_{i1}+\cdots +\beta _{p}x_{ip}+\varepsilon _{i}=\mathbf {x} _{i}^{T}{\boldsymbol {\beta }}+\varepsilon _{i},\qquad i=1,\ldots ,n}\]</div>
+<p>où <span class="math notranslate nohighlight">\(^T\)</span> dénote la transposée, dans le sens où <span class="math notranslate nohighlight">\(\mathbf {x} _{i}^{T}{\boldsymbol {\beta }}\)</span> correspond au produit scalaire des vecteurs <span class="math notranslate nohighlight">\(\mathbf x_i\)</span> et <span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span>.</p>
+<p>Ce système d’équations est souvent écrit sous forme matricielle <span class="math notranslate nohighlight">\({\displaystyle \mathbf {y} =\mathbf {X} {\boldsymbol {\beta }}+{\boldsymbol {\varepsilon }}}\)</span>, où</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\displaystyle \mathbf {y} ={\begin{bmatrix}y_{1}\\y_{2}\\\vdots \\y_{n}\end{bmatrix}},\quad} {\displaystyle \mathbf {X} ={\begin{bmatrix}\mathbf {x} _{1}^{ {T}}\\\mathbf {x} _{2}^{ {T}}\\\vdots \\\mathbf {x} _{n}^{ {T}}\end{bmatrix}}={\begin{bmatrix}1&amp;x_{11}&amp;\cdots &amp;x_{1p}\\1&amp;x_{21}&amp;\cdots &amp;x_{2p}\\\vdots &amp;\vdots &amp;\ddots &amp;\vdots \\1&amp;x_{n1}&amp;\cdots &amp;x_{np}\end{bmatrix}}}\end{split}\]</div>
+<p>et</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\displaystyle {\boldsymbol {\beta }}={\begin{bmatrix}\beta _{0}\\\beta _{1}\\\beta _{2}\\\vdots \\\beta _{p}\end{bmatrix}},\quad {\boldsymbol {\varepsilon }}={\begin{bmatrix}\varepsilon _{1}\\\varepsilon _{2}\\\vdots \\\varepsilon _{n}\end{bmatrix}}\sim\mathcal N(\mathbf 0,\Sigma).}\end{split}\]</div>
+<p>Selon les propriétés de la matrice de variance-covariance <span class="math notranslate nohighlight">\(\Sigma\)</span>, trois classes sont disponibles pour l’estimation des paramètres :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">OLS</span></code> : <a class="reference external" href="#moindres-carr%C3%A9s-ordinaires-ols">méthode des moindres carrés ordinaires</a> pour des erreurs <em>i.i.d.</em> <span class="math notranslate nohighlight">\(\Sigma=\sigma^2\mathbf I\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WLS</span></code> : <a class="reference external" href="#moindres-carr%C3%A9s-pond%C3%A9r%C3%A9s-wls">méthode des moindres carrés pondérés</a> pour des résidus hétéroscédastiques <span class="math notranslate nohighlight">\(\Sigma=\mathrm{diag}(\sigma_1^2,\sigma_2^2,...,\sigma_n^2)\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GLS</span></code> : <a class="reference external" href="#moindres-carr%C3%A9s-g%C3%A9n%C3%A9ralis%C3%A9s-gls">méthode des moindres carrés généralisés</a> pour une matrice <span class="math notranslate nohighlight">\(\Sigma\)</span> arbitraire.</p></li>
+</ul>
+<section id="moindres-carres-ordinaires-ols">
+<h2>Moindres Carrés Ordinaires (OLS)<a class="headerlink" href="#moindres-carres-ordinaires-ols" title="Permalink to this headline">#</a></h2>
+<p>Les coefficients <span class="math notranslate nohighlight">\(\boldsymbol\beta\)</span> sont déterminés selon le sens des problèmes de minimisation quadratique. Il s’agit de minimiser la somme des carrés des écarts, entre chaque point du nuage de régression et son projeté, parallèlement à l’axe des ordonnées, sur la droite de régression :</p>
+<div class="math notranslate nohighlight">
+\[{\hat {\boldsymbol {\beta }}}={\underset {\boldsymbol {\beta }}{\operatorname {arg\,min} }}\,S({\boldsymbol {\beta }})\]</div>
+<p>où <span class="math notranslate nohighlight">\(S(\boldsymbol{\beta})\)</span> est la somme des carrés des erreurs :</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle S({\boldsymbol {\beta }})=\sum _{i=1}^{n}{\biggl (}y_{i}-\sum _{j=1}^{p}X_{ij}\beta _{j}{\biggr )}^{2}={\bigl \|}\mathbf {y} -\mathbf {X} {\boldsymbol {\beta }}{\bigr \|}^{2}}\]</div>
+<p>Ce problème de minimisation a une solution unique, pour peu que les <span class="math notranslate nohighlight">\(p\)</span> colonnes de la matrice <span class="math notranslate nohighlight">\({\displaystyle \mathbf {X} }\)</span> soient linéairement indépendantes, donnée par la résolution des équations dites normales :</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle (\mathbf {X} ^{\mathsf {T}}\mathbf {X} ){\hat {\boldsymbol {\beta }}}=\mathbf {X} ^{{T}}\mathbf {y}}\]</div>
+<p>ou encore</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle {\hat {\boldsymbol {\beta }}}=\left(\mathbf {X} ^{{T}}\mathbf {X} \right)^{-1}\mathbf {X} ^{{T}}\mathbf {y}}\]</div>
+<div class="tip admonition">
+<p class="admonition-title">Propriété</p>
+<p><strong>Cette estimation possède l’erreur quadratique minimale dans la famille des estimateurs linéaires sans biais des paramètres</strong>.</p>
+</div>
+</section>
+<section id="moindres-carres-ponderes-wls">
+<h2>Moindres Carrés Pondérés (WLS)<a class="headerlink" href="#moindres-carres-ponderes-wls" title="Permalink to this headline">#</a></h2>
+<p>Un cas particulier de moindres carrés généralisés est les moindres carrés pondérés; utile lorsque tous les éléments non diagonaux de <span class="math notranslate nohighlight">\(\Sigma\)</span> la matrice de covariance des résidus sont nulles, et les variances des observations (le long de la diagonale de la matrice de covariance) ne sont pas égales (hétéroscédasticité).</p>
+<p>La fonction de coût à minimiser s’écrit alors :</p>
+<div class="math notranslate nohighlight">
+\[{S(\boldsymbol\beta)=\sum_{i=1}^nW_{ii}r_i(\boldsymbol{\beta})^2}\]</div>
+<p>où <span class="math notranslate nohighlight">\(r_i(\boldsymbol{\beta})\)</span> sont les résidus du modèle ajusté à l’échantillon <span class="math notranslate nohighlight">\({r_i(\boldsymbol{\beta})=y_i-f(x_i,\boldsymbol\beta)}\)</span> et <span class="math notranslate nohighlight">\(W_{ii}=\frac1{\sigma_i^2}\)</span> est le poids.</p>
+<p>Dès lors que les erreurs d’observation ne sont pas corrélées et que la matrice de poids, <span class="math notranslate nohighlight">\(W=\Sigma^{-1}\)</span>, est diagonale, les équations d’annulation du gradient <span class="math notranslate nohighlight">\(S(\boldsymbol\beta)\)</span> peuvent être écrites comme suit :</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle \mathbf {\left(X^{\textsf {T}}WX\right){\hat {\boldsymbol {\beta }}}=X^{\textsf {T}}Wy}}\]</div>
+<p>L’estimateur résultant <span class="math notranslate nohighlight">\(\hat{\boldsymbol\beta}\)</span> est <strong>BLUE</strong> (Best Linear Unbiased Estimator), c’est-à-dire à variance minimale dans la classe des estimateurs sans biais.</p>
+</section>
+<section id="moindres-carres-generalises-gls">
+<h2>Moindres Carrés Généralisés (GLS)<a class="headerlink" href="#moindres-carres-generalises-gls" title="Permalink to this headline">#</a></h2>
+<p>Les moindres carrés généralisés sont une technique d’estimation des paramètres d’un modèle de régression linéaire lorsqu’il existe un certain degré de corrélation entre ses résidus.</p>
+<p>Les paramètres <span class="math notranslate nohighlight">\(\boldsymbol\beta\)</span> sont estimés en minimisant la distance carrée de Mahalanobis du vecteur résiduel, <em>i.e.</em> :</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle \mathbf {\hat {\beta }} ={\underset {b}{\operatorname {argmin} }}\,(\mathbf {y} -\mathbf {X} \mathbf {b} )^{ {T}}\mathbf {\Sigma } ^{-1}(\mathbf {y} -\mathbf {X} \mathbf {b} )={\underset {b}{\operatorname {argmin} }}\,\mathbf {y} ^{{T}}\,\mathbf {\Sigma } ^{-1}\mathbf {y} +(\mathbf {X} \mathbf {b} )^{{T}}\mathbf {\Sigma } ^{-1}\mathbf {X} \mathbf {b} -\mathbf {y} ^{{T}}\mathbf {\Sigma } ^{-1}\mathbf {X} \mathbf {b} -(\mathbf {X} \mathbf {b} )^{{T}}\mathbf {\Sigma } ^{-1}\mathbf {y}}\]</div>
+<p>C’est une forme quadratique en <span class="math notranslate nohighlight">\(\mathbf b\)</span>. En prenant le gradient de cette quantité, et l’annuler, on obtient :</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle \mathbf {\hat {\beta }} =\left(\mathbf {X} ^{{T}}\mathbf {\Sigma } ^{-1}\mathbf {X} \right)^{-1}\mathbf {X} ^{{T}}\mathbf {\Sigma } ^{-1}\mathbf {y} }\]</div>
+<div class="tip admonition">
+<p class="admonition-title">Propriétés</p>
+<p><strong>Les estimateurs GLS sont sans biais, convergents, efficaces et asymptotiquement normaux. Le théorème de Gauss-Markov tient encore, ils constituent les estimateurs non biaisés à erreurs quadratiques moyennes les plus faibles</strong>.</p>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./Regression"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="intro1.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Introduction</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="statistics.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Attributs &amp; Statistiques Résultantes</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

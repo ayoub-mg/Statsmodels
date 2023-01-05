@@ -1,0 +1,667 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Exemple de Régression par les Moindres Carrés Généralisés (GLS) &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modèles Linéaires Généralisés" href="../GLM/GLM.html" />
+    <link rel="prev" title="Exemple de Régression par les Moindres Carrés Pondérés (WLS)" href="WLS.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="regression.html">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="statistics.html">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="OLS.html">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/GLM.html">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/MLG.html">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Decomposition.html">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/autoregression.html">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/ANOVA.html">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/Regression/GLS.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FRegression/GLS.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/Regression/GLS.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Exemple de Régression par les Moindres Carrés Généralisés (GLS)</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="exemple-de-regression-par-les-moindres-carres-generalises-gls">
+<h1>Exemple de Régression par les Moindres Carrés Généralisés (GLS)<a class="headerlink" href="#exemple-de-regression-par-les-moindres-carres-generalises-gls" title="Permalink to this headline">#</a></h1>
+<p>La méthode canonique du paquet <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> pour l’ajustement des modèles de régression linéaire selon le critère des moindres carrés généralisés (GLS) est la méthode <code class="docutils literal notranslate"><span class="pre">GLS</span></code>.</p>
+<p>Les paramètres requis sont :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">endog</span></code> : <code class="docutils literal notranslate"><span class="pre">array-like</span></code></p>
+<blockquote>
+<div><p>Une variable de réponse endogène sous forme d’objet compatible avec les arrays à une dimension <code class="docutils literal notranslate"><span class="pre">numpy</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exog</span></code> : <code class="docutils literal notranslate"><span class="pre">array-like</span></code></p>
+<blockquote>
+<div><p>Un tableau <span class="math notranslate nohighlight">\(n\times k\)</span> où <span class="math notranslate nohighlight">\(n\)</span> est le nombre d’observations et <span class="math notranslate nohighlight">\(k\)</span> est le nombre de régresseurs. Un terme <em>intercept</em> n’est pas inclus par défaut et doit être spécifié par l’utilisateur (au moyen de <code class="docutils literal notranslate"><span class="pre">add_constant</span></code>).</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sigma</span></code> : <code class="docutils literal notranslate"><span class="pre">scalar</span></code> ou <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>Un tableau ou un scalaire de type <code class="docutils literal notranslate"><span class="pre">numpy</span></code> désignant la matrice de variance-covariance pondérée <span class="math notranslate nohighlight">\(\Sigma\)</span>. La valeur par défaut est <code class="docutils literal notranslate"><span class="pre">None</span></code>. Si <code class="docutils literal notranslate"><span class="pre">sigma</span></code> est un scalaire, il est supposé que <code class="docutils literal notranslate"><span class="pre">sigma</span></code> est une matrice diagonale <span class="math notranslate nohighlight">\(n\times n\)</span> avec le scalaire donné comme valeur de chaque élément diagonal. Si <code class="docutils literal notranslate"><span class="pre">sigma</span></code> est un vecteur de longueur <span class="math notranslate nohighlight">\(n\)</span>, alors <code class="docutils literal notranslate"><span class="pre">sigma</span></code> est supposé être une matrice diagonale avec la valeur donnée sur la diagonale.</p>
+</div></blockquote>
+</li>
+</ul>
+<p>On commence par charger les paquets nécessaires, principalement <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot</span></code> pour le traçage, et <code class="docutils literal notranslate"><span class="pre">numpy</span></code> pour la manipulation des matrices et vecteurs et la génération aléatoire.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> offre la possibilité de charger des jeux de données classiques identiques à ceux du logiciel R, via le sous-module <code class="docutils literal notranslate"><span class="pre">datasets</span></code> pour réaliser des tests, comparer des modèles étudiés, ou pour des tutoriels d’apprentissage.</p>
+</div>
+<p>Le jeu de données qu’on utilisera pour cette manipulation est <strong>Longley</strong>. C’est une réalisation de séries temporelles de diverses variables macroéconomiques américaines connues pour être fortement colinéaires. On en extrait la variable de réponse.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">longley</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="n">data</span><span class="o">.</span><span class="n">exog</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="p">)</span>
+<span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   const  GNPDEFL       GNP   UNEMP   ARMED       POP    YEAR
+0    1.0     83.0  234289.0  2356.0  1590.0  107608.0  1947.0
+1    1.0     88.5  259426.0  2325.0  1456.0  108632.0  1948.0
+2    1.0     88.2  258054.0  3682.0  1616.0  109773.0  1949.0
+3    1.0     89.5  284599.0  3351.0  1650.0  110929.0  1950.0
+4    1.0     96.2  328975.0  2099.0  3099.0  112075.0  1951.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Pour déterminer le paramètre <code class="docutils literal notranslate"><span class="pre">sigma</span></code>, on estime d’emblée les résidus qui feront figure des erreurs <span class="math notranslate nohighlight">\((\varepsilon_i)_i\)</span>, avec la régression par le critère des moindres carrés OLS.</p>
+<div class="warning admonition">
+<p class="admonition-title">Mise en garde</p>
+<p>Cette technique d’estimation de la matrice <span class="math notranslate nohighlight">\(\Sigma\)</span> est dite <strong>Feasible Generalized Least Squares</strong> (<strong>FGLS</strong>), et se prête mieux aux échantillons de très grande taille.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ols_resid</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">endog</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span><span class="o">.</span><span class="n">resid</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Selon la documentation du jeu de données <strong>Longley</strong>, les termes d’erreur suivent un processus stochastiques de type <span class="math notranslate nohighlight">\(\mathrm{AR}(1)\)</span>, avec une tendance : <span class="math notranslate nohighlight">\(\varepsilon_i = \beta_0 + \rho\varepsilon_{i-1} + \eta_i\)</span> où <span class="math notranslate nohighlight">\(\eta \sim \mathcal 
+N(\mathbf 0,\Sigma^2)\)</span>.
+<span class="math notranslate nohighlight">\(\rho\)</span> est par conséquent l’autocorrélation des résidus, et peut être facilement estimée en estimant les paramètres de la régression des résidus par les mêmes résidus retardés (<span class="math notranslate nohighlight">\(\varepsilon_i\sim\varepsilon_{i-1}\)</span>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">resid_fit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ols_resid</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ols_resid</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="n">resid_fit</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.3634294908796553
+</pre></div>
+</div>
+</div>
+</div>
+<p>Puisque les termes d’un processus <span class="math notranslate nohighlight">\(\mathrm{AR}(1)\)</span> ont une forte corrélation avec les termes voisins, la matrice de variance-covariance pondérée <span class="math notranslate nohighlight">\(\Sigma\)</span> peut être déterminée comme suit :</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\begin{bmatrix}1&amp;\rho&amp;\cdots &amp;\rho^{n-1}\\\rho&amp;1&amp;\cdots &amp;\rho^{n-2}\\\vdots &amp;\vdots &amp;\ddots &amp;\vdots \\\rho^{n-1}&amp;\rho^{n-2}&amp;\cdots &amp;1\end{bmatrix}}\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sigma</span> <span class="o">=</span> <span class="n">rho</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">abs</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">]</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+<span class="n">gls_model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">GLS</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">endog</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+<span class="n">gls_results</span> <span class="o">=</span> <span class="n">gls_model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gls_results</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            GLS Regression Results                            
+==============================================================================
+Dep. Variable:                 TOTEMP   R-squared:                       0.998
+Model:                            GLS   Adj. R-squared:                  0.997
+Method:                 Least Squares   F-statistic:                     724.0
+Date:                Thu, 05 Jan 2023   Prob (F-statistic):           1.48e-11
+Time:                        23:24:00   Log-Likelihood:                -107.50
+No. Observations:                  16   AIC:                             229.0
+Df Residuals:                       9   BIC:                             234.4
+Df Model:                           6                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P&gt;|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const      -3.798e+06   6.71e+05     -5.663      0.000   -5.32e+06   -2.28e+06
+GNPDEFL      -12.7656     69.431     -0.184      0.858    -169.829     144.298
+GNP           -0.0380      0.026     -1.448      0.182      -0.097       0.021
+UNEMP         -2.1869      0.382     -5.719      0.000      -3.052      -1.322
+ARMED         -1.1518      0.165     -6.970      0.000      -1.526      -0.778
+POP           -0.0681      0.176     -0.386      0.709      -0.467       0.331
+YEAR        1993.9529    342.635      5.819      0.000    1218.860    2769.046
+==============================================================================
+Omnibus:                        1.365   Durbin-Watson:                   2.534
+Prob(Omnibus):                  0.505   Jarque-Bera (JB):                0.885
+Skew:                           0.209   Prob(JB):                        0.642
+Kurtosis:                       1.926   Cond. No.                     5.61e+09
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 5.61e+09. This might indicate that there are
+strong multicollinearity or other numerical problems.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/scipy/stats/_stats_py.py:1477: UserWarning: kurtosistest only valid for n&gt;=20 ... continuing anyway, n=16
+  warnings.warn(&quot;kurtosistest only valid for n&gt;=20 ... continuing &quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>La qualité d’ajustement du modèle linéaire par le critère des moindres carrés généralisés, <em>i.e.</em> <span class="math notranslate nohighlight">\(R^2=99\%\)</span>, confirme l’origine des données du jeu <strong>Longley</strong>.</p>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./Regression"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="WLS.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Exemple de Régression par les Moindres Carrés Pondérés (WLS)</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../GLM/GLM.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Modèles Linéaires Généralisés</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

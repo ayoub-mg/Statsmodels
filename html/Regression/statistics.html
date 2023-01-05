@@ -1,0 +1,686 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Attributs &amp; Statistiques Résultantes &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Exemple de Régression par les Moindres Carrés (OLS)" href="OLS.html" />
+    <link rel="prev" title="Régression Linéaire" href="regression.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="regression.html">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="OLS.html">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="GLS.html">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/GLM.html">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/MLG.html">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Decomposition.html">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/autoregression.html">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/ANOVA.html">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FRegression/statistics.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/Regression/statistics.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#attributs">
+   Attributs
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#statistiques-resultantes">
+   Statistiques Résultantes
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Attributs & Statistiques Résultantes</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#attributs">
+   Attributs
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#statistiques-resultantes">
+   Statistiques Résultantes
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="attributs-statistiques-resultantes">
+<h1>Attributs &amp; Statistiques Résultantes<a class="headerlink" href="#attributs-statistiques-resultantes" title="Permalink to this headline">#</a></h1>
+<p>Les différentes méthodes du paquet <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> ayant trait aux modèles linéaires renvoient des objets comprenant plusieurs attributs, qui permettent de synthétiser le résultat de l’ajustement ou du test statistique sous forme de quantités numériques ou de réalisations de statistiques.</p>
+<section id="attributs">
+<h2>Attributs<a class="headerlink" href="#attributs" title="Permalink to this headline">#</a></h2>
+<p>Voici une description des attributs communs à toutes les classes de régression <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>Les paramètres du modèle (<em>intercept</em> en tête).</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fittedvalues</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>Les valeurs prédites par le modèle pour chaque observation.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pvalues</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>Les valeurs du seuil critique pour chaque paramètre.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">f_pvalue</span></code> : <code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>La valeur du seuil critique (<span class="math notranslate nohighlight">\(p\)</span>-value) du test de Fisher global.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pinv_wexog</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>Le pseudo-inverse de la matrice explicative d’ordre <span class="math notranslate nohighlight">\(p\times n\)</span>. Approximativement égal à <span class="math notranslate nohighlight">\(\left(\mathbf X^{T}\Sigma^{-1}\mathbf X\right)^{-1}\mathbf X^{T}\Psi\)</span>, où <span class="math notranslate nohighlight">\(\Psi\)</span> est défini comme <span class="math notranslate nohighlight">\(\Psi\Psi^{T}=\Sigma^{-1}\)</span>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cholsimgainv</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>La matrice triangulaire supérieur <span class="math notranslate nohighlight">\(\Psi^T\)</span> vérifiant <span class="math notranslate nohighlight">\(\Psi\Psi^{T}=\Sigma^{-1}\)</span>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">df_model</span></code> : <code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>Le nombre de degrés de liberté du modèle, égal à <span class="math notranslate nohighlight">\(p-1\)</span>, où <span class="math notranslate nohighlight">\(p\)</span> est le nombre de régresseurs. Il est à noter que l’<em>intercept</em> est aussi traité en tant que degré de liberté.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">df_resid</span></code> : <code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>Le nombre de degrés de liberté des résidus, c’est-à-dire <span class="math notranslate nohighlight">\(n-p\)</span>, où <span class="math notranslate nohighlight">\(n\)</span> est le nombre d’observations et <span class="math notranslate nohighlight">\(p\)</span> celui des paramètres. La constante à l’origine est pareillement comptabilisé.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">llf</span></code> : <code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>La valeur de la fonction de vraisemblance du modèle ajusté.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nobs</span></code> : <code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>Le nombre d’observations de l’échantillon.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalized_cov_params</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>Matrice d’ordre <span class="math notranslate nohighlight">\(p\times p\)</span> de valeur <span class="math notranslate nohighlight">\((\mathbf X^{T}\Sigma^{-1}\mathbf X)^{-1}\)</span>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sigma</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>La matrice de variance-covariance des termes d’erreur <span class="math notranslate nohighlight">\(\mathbf{\varepsilon}\sim \mathcal N\left(\mathbf 0,\Sigma\right)\)</span>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wexog</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>La matrice explicative modifiée <span class="math notranslate nohighlight">\(\Psi^{T}\mathbf X\)</span>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wendog</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>La matrice de réponse modifiée <span class="math notranslate nohighlight">\(\Psi^{T}\mathbf y\)</span>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">conf_int(alpha)</span></code> : <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+<blockquote>
+<div><p>L’intervalle de confiance sur chacun des paramètres au niveau de confiance <code class="docutils literal notranslate"><span class="pre">alpha</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">centered_tss</span></code> : <code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>La variance totale (somme des carrés des écarts à la moyenne) du modèle.</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="statistiques-resultantes">
+<h2>Statistiques Résultantes<a class="headerlink" href="#statistiques-resultantes" title="Permalink to this headline">#</a></h2>
+<p>En invoquant la méthode <code class="docutils literal notranslate"><span class="pre">summary()</span></code> d’un objet encapsulant le résultat d’une fonction d’ajustement d’un modèle statistique, plusieurs statistiques sont affichées sous format textuel, au premier rang desquelles :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">R-squared</span></code> : Coefficient de détermination linéaire de la régression, noté <span class="math notranslate nohighlight">\(R^2\)</span>, qui mesure la qualité de la prédiction de l’ajustement d’un modèle linéaire. Il correspond à la proportion de la variation observée de la variable de réponse expliquée par le(s) variable(s) explicative(s).</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[{\displaystyle R^{2}=1-{\dfrac {\sum _{i=1}^{n}\left(y_{i}-{\hat {y_{i}}}\right)^{2}}{\sum _{i=1}^{n}\left(y_{i}-{\bar {y}}\right)^{2}}}}\]</div>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Adj.</span> <span class="pre">R-squared</span></code> : Permet de contourner le phénomène d’inflation de <span class="math notranslate nohighlight">\(R^2\)</span> lors de l’ajout de variables explicatives au modèle. Utile pour la comparaison entre modèle de niveaux différents.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[{\displaystyle {\bar {R}}^{2}=1-(1-R^{2}){n-1 \over n-p}}\]</div>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">F-statistic</span></code> : Réalisation de la statistique de Fisher mesurant la significativité de l’ajustement du modèle par rapport au modèle naïf (ajustement par la moyenne).</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\mathrm F = \frac{\mathrm{MCE}}{\mathrm{MCR}}\]</div>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Prob</span> <span class="pre">(F-statistic)</span></code> : Probabilité que le modèle complet n’est pas meilleur que le modèle naïf. Plus il est faible, le mieux l’échantillon s’ajuste au modèle.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Log-Likelihood</span></code> : Probabilité conditionnelle que le modèle est adapté.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AIC</span></code> : Critère d’information d’Akaike estimant l’erreur de prédiction, et donc ipso-facto la qualité d’ajustement du modèle statistique.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[{\displaystyle \mathrm {AIC} \,=\,2k-2\ln({\hat {L}})}\]</div>
+</div></blockquote>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  où $\hat L$ est le maximum de vraisemblance du modèle.
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Df</span> <span class="pre">Residuals</span></code> : Degrés de liberté des résidus entre les valeurs observées et prédites.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BIC</span></code> : Critère d’information Bayésien, pénalisant le nombre de paramètres plus fortement que <span class="math notranslate nohighlight">\(\rm AIC\)</span>.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[{\mathrm {BIC}}=-2\ln(\hat L)+\ln(n)k\]</div>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Df</span> <span class="pre">Model</span></code> : Nombre de paramètres du modèle.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Coefficient</span> <span class="pre">Constant</span></code> : <em>Intercept</em> de <span class="math notranslate nohighlight">\(\mathbf y\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Independent</span> <span class="pre">Coefficient</span></code> : Représente la quantité à ajouter à la réponse en modifiant les variables indépendantes d’une unité.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Standard</span> <span class="pre">Error</span></code> : Erreur standard (écart-type) de l’estimation des paramètres.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">P&gt;|t|</span></code> : Valeur du seuil critique (<span class="math notranslate nohighlight">\(p\)</span>-value), associée au test d’hypothèse nulle <span class="math notranslate nohighlight">\(\mathrm H_0 : \beta_j=0\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[.025</span> <span class="pre">-</span> <span class="pre">.975]</span></code> : Intervalle de confiance encapsulant <span class="math notranslate nohighlight">\(95\%\)</span> des estimations des paramètres.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Skew</span></code> : Mesure de l’asymétrie de la distribution de probabilité des résidus. Une asymétrie négative indique que la queue est plus longue à gauche et que la concentration des données se trouve à droite. Une valeur positive insinue que la queue est plus longue à droite. 0 indique que les queues sont équilibrées.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Kurtosis</span></code> : Décrit la forme de la distribution des résidus en s’intéressant aux queues et non sur le pic. Si la valeur est forte, cela signifie qu’il y a plus de valeurs aberrantes. Si la valeur est inférieure à 3, cela signifie qu’il y a moins de valeurs aberrantes. Une valeur de 3 indique une distribution normale. Les valeurs supérieures à 3 indiquent un plus grand nombre de valeurs aberrantes.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./Regression"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="regression.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Régression Linéaire</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="OLS.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Exemple de Régression par les Moindres Carrés (OLS)</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

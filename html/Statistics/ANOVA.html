@@ -1,0 +1,792 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Analyse de la Variance (ANOVA) &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Analyse en Composantes Principales (ACP)" href="PCA.html" />
+    <link rel="prev" title="Autorégressions" href="../Time%20Series/autoregression.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/regression.html">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/statistics.html">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/OLS.html">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/GLS.html">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/GLM.html">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/MLG.html">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Decomposition.html">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/autoregression.html">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/Statistics/ANOVA.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FStatistics/ANOVA.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/Statistics/ANOVA.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Analyse de la Variance (ANOVA)</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="analyse-de-la-variance-anova">
+<h1>Analyse de la Variance (ANOVA)<a class="headerlink" href="#analyse-de-la-variance-anova" title="Permalink to this headline">#</a></h1>
+<p>En statistique, l’<strong>analyse de la variance</strong> (terme souvent abrégé par le terme anglais ANOVA : <em>Analysis of Variance</em>) est un ensemble de modèles statistiques utilisés pour vérifier si les moyennes des groupes proviennent d’une même population. Les groupes correspondent aux modalités d’une variable qualitative et les moyennes sont calculés à partir d’une variable continue. Ce test s’applique lorsque l’on mesure une ou plusieurs variables explicatives catégorielle (appelées alors facteurs de variabilité, leurs différentes modalités étant parfois appelées « niveaux ») qui ont de l’influence sur la loi d’une variable continue à expliquer.</p>
+<div class="note admonition">
+<p class="admonition-title">Autrement dit</p>
+<p>L’analyse de la variance permet d’étudier le comportement d’une variable quantitative à expliquer en fonction d’une ou de plusieurs variables qualitatives, aussi appelées nominales catégorielles.</p>
+</div>
+<p>La méthode à utiliser pour réaliser des analyses de la variance du paquet <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> est <code class="docutils literal notranslate"><span class="pre">anova_lm</span></code>, en précisant les modèles statistiques à comparer en paramètres.</p>
+<p>Pour examiner l’utilisation de cette méthode, on</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.width&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">statsmodels.formula.api</span> <span class="kn">import</span> <span class="n">ols</span>
+<span class="kn">from</span> <span class="nn">statsmodels.graphics.api</span> <span class="kn">import</span> <span class="n">interaction_plot</span><span class="p">,</span> <span class="n">abline_plot</span>
+<span class="kn">from</span> <span class="nn">statsmodels.stats.anova</span> <span class="kn">import</span> <span class="n">anova_lm</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Le jeu de données utilisé constitue un ensemble de <span class="math notranslate nohighlight">\(46\)</span> observations des salaires d’un groupe d’employés selon leur expérience, laquelle est une variable numérique variant dans <span class="math notranslate nohighlight">\([0,20]\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://stats191.stanford.edu/data/salary.table&quot;</span>
+<span class="n">fh</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">salary_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+<span class="n">salary_table</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;salary.table&quot;</span><span class="p">)</span>
+
+<span class="n">E</span> <span class="o">=</span> <span class="n">salary_table</span><span class="o">.</span><span class="n">E</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">salary_table</span><span class="o">.</span><span class="n">M</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">salary_table</span><span class="o">.</span><span class="n">X</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">salary_table</span><span class="o">.</span><span class="n">S</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+<span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;^&quot;</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">]</span>
+<span class="n">factor_groups</span> <span class="o">=</span> <span class="n">salary_table</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">values</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">factor_groups</span><span class="p">:</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">values</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">],</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;S&quot;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">symbols</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">144</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Expérience&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Salaire&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;Salaire&#39;)
+</pre></div>
+</div>
+<img alt="../_images/ANOVA_7_1.png" src="../_images/ANOVA_7_1.png" />
+</div>
+</div>
+<p>On ajuste un modèle linéaire des moindres carrés ordinaires sur les données en question, moyennant la spécification par les formules (type R).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">formula</span> <span class="o">=</span> <span class="s2">&quot;S ~ C(E) + C(M) + X&quot;</span>
+<span class="n">lm</span> <span class="o">=</span> <span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="n">salary_table</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lm</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      S   R-squared:                       0.957
+Model:                            OLS   Adj. R-squared:                  0.953
+Method:                 Least Squares   F-statistic:                     226.8
+Date:                Thu, 05 Jan 2023   Prob (F-statistic):           2.23e-27
+Time:                        23:24:13   Log-Likelihood:                -381.63
+No. Observations:                  46   AIC:                             773.3
+Df Residuals:                      41   BIC:                             782.4
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P&gt;|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept   8035.5976    386.689     20.781      0.000    7254.663    8816.532
+C(E)[T.2]   3144.0352    361.968      8.686      0.000    2413.025    3875.045
+C(E)[T.3]   2996.2103    411.753      7.277      0.000    2164.659    3827.762
+C(M)[T.1]   6883.5310    313.919     21.928      0.000    6249.559    7517.503
+X            546.1840     30.519     17.896      0.000     484.549     607.819
+==============================================================================
+Omnibus:                        2.293   Durbin-Watson:                   2.237
+Prob(Omnibus):                  0.318   Jarque-Bera (JB):                1.362
+Skew:                          -0.077   Prob(JB):                        0.506
+Kurtosis:                       2.171   Cond. No.                         33.5
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</pre></div>
+</div>
+</div>
+</div>
+<p>On récupère l’influence sur la régression de chaque observation au travers de la méthode <code class="docutils literal notranslate"><span class="pre">get_influence()</span></code> :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">infl</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_influence</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">infl</span><span class="o">.</span><span class="n">summary_table</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==================================================================================================
+       obs      endog     fitted     Cook&#39;s   student.   hat diag    dffits   ext.stud.     dffits
+                           value          d   residual              internal   residual           
+--------------------------------------------------------------------------------------------------
+         0  13876.000  15465.313      0.104     -1.683      0.155     -0.722     -1.723     -0.739
+         1  11608.000  11577.992      0.000      0.031      0.130      0.012      0.031      0.012
+         2  18701.000  18461.523      0.001      0.247      0.109      0.086      0.244      0.085
+         3  11283.000  11725.817      0.005     -0.458      0.113     -0.163     -0.453     -0.162
+         4  11767.000  11577.992      0.001      0.197      0.130      0.076      0.195      0.075
+         5  20872.000  19155.532      0.092      1.787      0.126      0.678      1.838      0.698
+         6  11772.000  12272.001      0.006     -0.513      0.101     -0.172     -0.509     -0.170
+         7  10535.000   9127.966      0.056      1.457      0.116      0.529      1.478      0.537
+         8  12195.000  12124.176      0.000      0.074      0.123      0.028      0.073      0.027
+         9  12313.000  12818.185      0.005     -0.516      0.091     -0.163     -0.511     -0.161
+        10  14975.000  16557.681      0.084     -1.655      0.134     -0.650     -1.692     -0.664
+        11  21371.000  19701.716      0.078      1.728      0.116      0.624      1.772      0.640
+        12  19800.000  19553.891      0.001      0.252      0.096      0.082      0.249      0.081
+        13  11417.000  10220.334      0.033      1.227      0.098      0.405      1.234      0.408
+        14  20263.000  20100.075      0.001      0.166      0.093      0.053      0.165      0.053
+        15  13231.000  13216.544      0.000      0.015      0.114      0.005      0.015      0.005
+        16  12884.000  13364.369      0.004     -0.488      0.082     -0.146     -0.483     -0.145
+        17  13245.000  13910.553      0.007     -0.674      0.075     -0.192     -0.669     -0.191
+        18  13677.000  13762.728      0.000     -0.089      0.113     -0.032     -0.087     -0.031
+        19  15965.000  17650.049      0.082     -1.747      0.119     -0.642     -1.794     -0.659
+        20  12336.000  11312.702      0.021      1.043      0.087      0.323      1.044      0.323
+        21  21352.000  21192.443      0.001      0.163      0.091      0.052      0.161      0.051
+        22  13839.000  14456.737      0.006     -0.624      0.070     -0.171     -0.619     -0.170
+        23  22884.000  21340.268      0.052      1.579      0.095      0.511      1.610      0.521
+        24  16978.000  18742.417      0.083     -1.822      0.111     -0.644     -1.877     -0.664
+        25  14803.000  15549.105      0.008     -0.751      0.065     -0.199     -0.747     -0.198
+        26  17404.000  19288.601      0.093     -1.944      0.110     -0.684     -2.016     -0.709
+        27  22184.000  22284.811      0.000     -0.103      0.096     -0.034     -0.102     -0.033
+        28  13548.000  12405.070      0.025      1.162      0.083      0.350      1.167      0.352
+        29  14467.000  13497.438      0.018      0.987      0.086      0.304      0.987      0.304
+        30  15942.000  16641.473      0.007     -0.705      0.068     -0.190     -0.701     -0.189
+        31  23174.000  23377.179      0.001     -0.209      0.108     -0.073     -0.207     -0.072
+        32  23780.000  23525.004      0.001      0.260      0.092      0.083      0.257      0.082
+        33  25410.000  24071.188      0.040      1.370      0.096      0.446      1.386      0.451
+        34  14861.000  14043.622      0.014      0.834      0.091      0.263      0.831      0.262
+        35  16882.000  17733.841      0.012     -0.863      0.077     -0.249     -0.860     -0.249
+        36  24170.000  24469.547      0.003     -0.312      0.127     -0.119     -0.309     -0.118
+        37  15990.000  15135.990      0.018      0.878      0.104      0.300      0.876      0.299
+        38  26330.000  25163.556      0.035      1.202      0.109      0.420      1.209      0.422
+        39  17949.000  18826.209      0.017     -0.897      0.093     -0.288     -0.895     -0.287
+        40  25685.000  26108.099      0.008     -0.452      0.169     -0.204     -0.447     -0.202
+        41  27837.000  26802.108      0.039      1.087      0.141      0.440      1.089      0.441
+        42  18838.000  19918.577      0.033     -1.119      0.117     -0.407     -1.123     -0.408
+        43  17483.000  16774.542      0.018      0.743      0.138      0.297      0.739      0.295
+        44  19207.000  20464.761      0.052     -1.313      0.131     -0.511     -1.325     -0.515
+        45  19346.000  18959.278      0.009      0.423      0.208      0.216      0.419      0.214
+==================================================================================================
+</pre></div>
+</div>
+</div>
+</div>
+<p>À présent, on trace le graphique des résidus pour chaque groupe séparément :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">resid</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">resid</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">values</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">factor_groups</span><span class="p">:</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">values</span>
+    <span class="n">group_num</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span> 
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_num</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">resid</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">index</span><span class="p">],</span><span class="n">marker</span><span class="o">=</span><span class="n">symbols</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span><span class="n">s</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span><span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Groupes&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Résidus&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;Résidus&#39;)
+</pre></div>
+</div>
+<img alt="../_images/ANOVA_13_1.png" src="../_images/ANOVA_13_1.png" />
+</div>
+</div>
+<p>Ensuite, on ajuste un modèle pour le comparer au premier via l’analyse de la variance.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">interX_lm</span> <span class="o">=</span> <span class="n">ols</span><span class="p">(</span><span class="s2">&quot;S ~ C(E) * X + C(M)&quot;</span><span class="p">,</span> <span class="n">salary_table</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">interX_lm</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      S   R-squared:                       0.961
+Model:                            OLS   Adj. R-squared:                  0.955
+Method:                 Least Squares   F-statistic:                     158.6
+Date:                Thu, 05 Jan 2023   Prob (F-statistic):           8.23e-26
+Time:                        23:24:14   Log-Likelihood:                -379.47
+No. Observations:                  46   AIC:                             772.9
+Df Residuals:                      39   BIC:                             785.7
+Df Model:                           6                                         
+Covariance Type:            nonrobust                                         
+===============================================================================
+                  coef    std err          t      P&gt;|t|      [0.025      0.975]
+-------------------------------------------------------------------------------
+Intercept    7256.2800    549.494     13.205      0.000    6144.824    8367.736
+C(E)[T.2]    4172.5045    674.966      6.182      0.000    2807.256    5537.753
+C(E)[T.3]    3946.3649    686.693      5.747      0.000    2557.396    5335.333
+C(M)[T.1]    7102.4539    333.442     21.300      0.000    6428.005    7776.903
+X             632.2878     53.185     11.888      0.000     524.710     739.865
+C(E)[T.2]:X  -125.5147     69.863     -1.797      0.080    -266.826      15.796
+C(E)[T.3]:X  -141.2741     89.281     -1.582      0.122    -321.861      39.313
+==============================================================================
+Omnibus:                        0.432   Durbin-Watson:                   2.179
+Prob(Omnibus):                  0.806   Jarque-Bera (JB):                0.590
+Skew:                           0.144   Prob(JB):                        0.744
+Kurtosis:                       2.526   Cond. No.                         69.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</pre></div>
+</div>
+</div>
+</div>
+<p>À présent, on compare les deux modèles élaborés avec la fonction <code class="docutils literal notranslate"><span class="pre">anova_lm</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">statsmodels.stats.api</span> <span class="kn">import</span> <span class="n">anova_lm</span>
+
+<span class="n">table1</span> <span class="o">=</span> <span class="n">anova_lm</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">interX_lm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">table1</span><span class="p">)</span>
+
+<span class="n">interM_lm</span> <span class="o">=</span> <span class="n">ols</span><span class="p">(</span><span class="s2">&quot;S ~ X + C(E)*C(M)&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">salary_table</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+
+<span class="n">table2</span> <span class="o">=</span> <span class="n">anova_lm</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">interM_lm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">table2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   df_resid           ssr  df_diff       ss_diff         F    Pr(&gt;F)
+0      41.0  4.328072e+07      0.0           NaN       NaN       NaN
+1      39.0  3.941068e+07      2.0  3.870040e+06  1.914856  0.160964
+   df_resid           ssr  df_diff       ss_diff           F        Pr(&gt;F)
+0      41.0  4.328072e+07      0.0           NaN         NaN           NaN
+1      39.0  1.178168e+06      2.0  4.210255e+07  696.844466  3.025504e-31
+</pre></div>
+</div>
+</div>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Conclusion</p>
+<p>Dès lors que la première valeur du seuil critique (<span class="math notranslate nohighlight">\(p\)</span>-value) est supérieure à <span class="math notranslate nohighlight">\(5\%\)</span>, alors le deuxième modèle <code class="docutils literal notranslate"><span class="pre">interX_lm</span></code> est significativement meilleur. Le troisième modèle <code class="docutils literal notranslate"><span class="pre">interM_lm</span></code> ne contribue pas significativement mieux par rapport au modèle de base, dès lors que sa <span class="math notranslate nohighlight">\(p\)</span>-valeur est inférieure à <span class="math notranslate nohighlight">\(5\%\)</span>.</p>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./Statistics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../Time%20Series/autoregression.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Autorégressions</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="PCA.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Analyse en Composantes Principales (ACP)</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

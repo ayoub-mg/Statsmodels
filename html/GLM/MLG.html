@@ -1,0 +1,1132 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Ajustement d’un Modèle Linéaire Généralisé &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Séries Temporelles" href="../Time%20Series/Series.html" />
+    <link rel="prev" title="Modèles Linéaires Généralisés" href="GLM.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/regression.html">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/statistics.html">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/OLS.html">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/GLS.html">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="GLM.html">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Decomposition.html">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/autoregression.html">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/ANOVA.html">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/GLM/MLG.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FGLM/MLG.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/GLM/MLG.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#glm-avec-reponse-binomiale">
+   GLM avec Réponse Binomiale
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#glm-avec-reponse-gaussienne">
+   GLM avec Réponse Gaussienne
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Ajustement d’un Modèle Linéaire Généralisé</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#glm-avec-reponse-binomiale">
+   GLM avec Réponse Binomiale
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#glm-avec-reponse-gaussienne">
+   GLM avec Réponse Gaussienne
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="ajustement-d-un-modele-lineaire-generalise">
+<h1>Ajustement d’un Modèle Linéaire Généralisé<a class="headerlink" href="#ajustement-d-un-modele-lineaire-generalise" title="Permalink to this headline">#</a></h1>
+<p>La méthode idoine pour ajuster des modèles linéaires généralisés au sein du paquet <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> est <code class="docutils literal notranslate"><span class="pre">GLM</span></code>. Les paramètres à spécifier sont :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">endog</span></code> : <code class="docutils literal notranslate"><span class="pre">array-like</span></code></p>
+<blockquote>
+<div><p>Une variable de réponse endogène sous forme de tableau à une ou deux dimensions à l’image des arrays <code class="docutils literal notranslate"><span class="pre">numpy</span></code>. Les modèles de la famille binomiale prennent en charge un tableau à deux colonnes, où chaque observation est supposée être sous format  <code class="docutils literal notranslate"><span class="pre">[succès,</span> <span class="pre">échec]</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exog</span></code> : <code class="docutils literal notranslate"><span class="pre">array-like</span></code></p>
+<blockquote>
+<div><p>Un tableau <span class="math notranslate nohighlight">\(n\times k\)</span> où <span class="math notranslate nohighlight">\(n\)</span> est le nombre d’observations et <span class="math notranslate nohighlight">\(k\)</span> est le nombre de régresseurs. Un terme <em>intercept</em> n’est pas inclus par défaut et doit être spécifié (au moyen de <code class="docutils literal notranslate"><span class="pre">add_constant</span></code>). Les modèles définis au travers des formules comprennent une constante par construction.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">family</span></code> : Instance de la classe <code class="docutils literal notranslate"><span class="pre">statsmodels.api.family</span></code></p>
+<blockquote>
+<div><p>Par défaut, correspond à la distribution gaussienne. Chaque constructeur de famille peut prendre en argument une fonction de lien (<em>i.e.</em> objet de type <code class="docutils literal notranslate"><span class="pre">statsmodels.api.families.family.&lt;familyname&gt;.Link</span></code>).
+Les familles de distributions implémentées sont :</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Family(link, variance)</span></code>    :   Classe parente pour les familles exponentielles;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Binomial([link])</span></code>    :    Distribution binomiale de la famille exponentielle;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Gamma([link])</span></code>    :   Distribution Gamma de la famille exponentielle;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Gaussian([link])</span></code>    :    Loi normale gaussienne;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">InverseGaussian([link])</span></code>    :    Loi normale inverse;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NegativeBinomial([link, alpha])</span></code>    :   Loi binomiale négative;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Poisson([link])</span></code>    :   Loi de Poisson de la famille exponentielle.</p></li>
+</ul>
+<blockquote>
+<div><p>Les fonctions de liens prises en charge par une distribution peuvent être obtenues via <code class="docutils literal notranslate"><span class="pre">sm.families.family.&lt;familyname&gt;.links</span></code>. Les fonctions les plus courantes sont : <code class="docutils literal notranslate"><span class="pre">Log()</span></code>, <code class="docutils literal notranslate"><span class="pre">Logit()</span></code>, <code class="docutils literal notranslate"><span class="pre">probit()</span></code>, <code class="docutils literal notranslate"><span class="pre">identity()</span></code>…</p>
+</div></blockquote>
+<p>Seules ces combinaisons sont licites pour les familles et les fonctions de lien :</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="text-align:center head"><p>Family</p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">ident</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">log</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">logit</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">probit</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">cloglog</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">pow</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">opow</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">nbinom</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">loglog</span></code></p></th>
+<th class="text-align:center head"><p><code class="docutils literal notranslate"><span class="pre">logc</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-align:center"><p>Gaussienne</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:center"><p>Inv-Gaussienne</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-align:center"><p>Binomiale</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:center"><p>Poisson</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-align:center"><p>Binomiale Négative</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:center"><p>Gamma</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-align:center"><p>Tweedie</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p>x</p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+<td class="text-align:center"><p></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<p>  </p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code> : <code class="docutils literal notranslate"><span class="pre">array_like</span></code> ou <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<blockquote>
+<div><p>Un décalage ou <em>offset</em> à ajouter au modèle. Auquel cas, doit être un array dont la longueur est égale au nombre de lignes <code class="docutils literal notranslate"><span class="pre">exog</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exposure</span></code> : <code class="docutils literal notranslate"><span class="pre">array_like</span></code> ou <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<blockquote>
+<div><p>Une variable d’exposition ou <em>exposure</em>, qui indique combien de temps a duré l’exposition ou le nombre de
+fois où l’événement pourrait avoir eu lieu. Le cas échéant, <code class="docutils literal notranslate"><span class="pre">Log(exposure)</span></code> sera ajouté à la prédiction linéaire du modèle. Doit correspondre à un array de même longueur que <code class="docutils literal notranslate"><span class="pre">endog</span></code>.</p>
+</div></blockquote>
+</li>
+</ul>
+<div class="warning admonition">
+<p class="admonition-title">Attention</p>
+<p>La variable d’exposition n’est valide uniquement lorsque la fonction de lien est logarithmique!</p>
+</div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">freq_weights</span></code> : <code class="docutils literal notranslate"><span class="pre">array_like</span></code></p>
+<blockquote>
+<div><p>Un tableau à une dimension définissant les poids des fréquences des observations. À défaut de valeur, l’algorithme remplace cet argument par un array constitué de <span class="math notranslate nohighlight">\(1\)</span> et de longueur identique à celle de la variable <code class="docutils literal notranslate"><span class="pre">endog</span></code>. Les poids des fréquences produisent les mêmes résultats que la répétition des observations au nombre des fréquences. Les pondérations de fréquence maintiennent le nombre d’observations cohérent, mais les degrés de liberté changent pour refléter les nouveaux poids.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">var_weights</span></code> : <code class="docutils literal notranslate"><span class="pre">array_like</span></code></p>
+<blockquote>
+<div><p>Un tableau à une dimension déterminant les poids des variances. À défaut de valeur, l’algorithme remplace cet argument par un array constitué de <span class="math notranslate nohighlight">\(1\)</span> et de longueur identique à celle de la variable <code class="docutils literal notranslate"><span class="pre">endog</span></code>. Les poids des variances sont utilisés lorsque <code class="docutils literal notranslate"><span class="pre">endog</span></code> représente une moyenne. Cela repose sur l’hypothèse que l’inverse de la variance est proportionnel au poids - une observation jugée plus crédible devrait avoir moins de variance et donc avoir plus de poids.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">missing</span></code> : <code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+<blockquote>
+<div><p>Les options disponibles sont <code class="docutils literal notranslate"><span class="pre">none</span></code>, <code class="docutils literal notranslate"><span class="pre">drop</span></code>, et <code class="docutils literal notranslate"><span class="pre">raise</span></code>. Si <code class="docutils literal notranslate"><span class="pre">none</span></code>, aucune vérification des valeurs <code class="docutils literal notranslate"><span class="pre">nan</span></code> n’est effectuée. <code class="docutils literal notranslate"><span class="pre">drop</span></code> fait que toutes les observations avec des <code class="docutils literal notranslate"><span class="pre">nan</span></code> sont abandonnées. <code class="docutils literal notranslate"><span class="pre">raise</span></code> signale une erreur. La valeur par défaut est <code class="docutils literal notranslate"><span class="pre">none</span></code>.</p>
+</div></blockquote>
+</li>
+</ul>
+<p>On commence par charger les paquets nécessaires, entre autres <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot</span></code> pour le traçage, <code class="docutils literal notranslate"><span class="pre">numpy</span></code> pour la manipulation des matrices et vecteurs et la génération aléatoire, ainsi que <code class="docutils literal notranslate"><span class="pre">pandas</span></code> pour le stockage des données.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Affichage avec la bibliothèque graphique intégrée à Notebook</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s2">&quot;figure&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s2">&quot;font&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="glm-avec-reponse-binomiale">
+<h2>GLM avec Réponse Binomiale<a class="headerlink" href="#glm-avec-reponse-binomiale" title="Permalink to this headline">#</a></h2>
+<p>Dans un premier temps, on commence par ajuster un modèle linéaire généralisé à une variable expliquée binomiale (binaire).</p>
+<p>Pour ce faire, on invoque le jeu de données <strong>Star98</strong>, concernent les résultats du programme STAR mis en place par l’instance pédagogique de California lors de 1998. Les données mesurent les tests standardisés du département californien de l’éducation qui a exigé l’évaluation des élèves de la 2ème à la 11ème année par le test Stanford 9 sur une variété de sujets. Ce jeu de données compore 303 enregistrements. La variable de réponse représente le nombre d’élèves de 9ème année ayant obtenu un score supérieur à la valeur médiane nationale à l’examen de mathématiques.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">star98</span><span class="o">.</span><span class="n">NOTE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>::
+
+    Number of Observations - 303 (counties in California).
+
+    Number of Variables - 13 and 8 interaction terms.
+
+    Definition of variables names::
+
+        NABOVE   - Total number of students above the national median for the
+                   math section.
+        NBELOW   - Total number of students below the national median for the
+                   math section.
+        LOWINC   - Percentage of low income students
+        PERASIAN - Percentage of Asian student
+        PERBLACK - Percentage of black students
+        PERHISP  - Percentage of Hispanic students
+        PERMINTE - Percentage of minority teachers
+        AVYRSEXP - Sum of teachers&#39; years in educational service divided by the
+                number of teachers.
+        AVSALK   - Total salary budget including benefits divided by the number
+                   of full-time teachers (in thousands)
+        PERSPENK - Per-pupil spending (in thousands)
+        PTRATIO  - Pupil-teacher ratio.
+        PCTAF    - Percentage of students taking UC/CSU prep courses
+        PCTCHRT  - Percentage of charter schools
+        PCTYRRND - Percentage of year-round schools
+
+        The below variables are interaction terms of the variables defined
+        above.
+
+        PERMINTE_AVYRSEXP
+        PEMINTE_AVSAL
+        AVYRSEXP_AVSAL
+        PERSPEN_PTRATIO
+        PERSPEN_PCTAF
+        PTRATIO_PCTAF
+        PERMINTE_AVTRSEXP_AVSAL
+        PERSPEN_PTRATIO_PCTAF
+</pre></div>
+</div>
+</div>
+</div>
+<p>On importe d’emblée le jeu de données, et on ajoute un terme constant aux variables expliquées exogènes :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">star98</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="n">data</span><span class="o">.</span><span class="n">exog</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>La variable de réponse correspond au couple <span class="math notranslate nohighlight">\(\rm{[Succès :}\)</span> <code class="docutils literal notranslate"><span class="pre">NABOVE</span></code> <span class="math notranslate nohighlight">\(\rm{,Échec :}\)</span> <code class="docutils literal notranslate"><span class="pre">NBELOW</span></code> <span class="math notranslate nohighlight">\(]\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">endog</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   NABOVE  NBELOW
+0   452.0   355.0
+1   144.0    40.0
+2   337.0   234.0
+3   395.0   178.0
+4     8.0    57.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Les variables indépendantes comportent toutes les autres variables décrites ci-dessus, ainsi que les termes d’interaction :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     LOWINC   PERASIAN   PERBLACK    PERHISP  PERMINTE  AVYRSEXP    AVSALK  \
+0  34.39730  23.299300  14.235280  11.411120  15.91837  14.70646  59.15732   
+1  17.36507  29.328380   8.234897   9.314884  13.63636  16.08324  59.50397   
+2  32.64324   9.226386  42.406310  13.543720  28.83436  14.59559  60.56992   
+3  11.90953  13.883090   3.796973  11.443110  11.11111  14.38939  58.33411   
+4  36.88889  12.187500  76.875000   7.604167  43.58974  13.90568  63.15364   
+
+   PERSPENK   PTRATIO     PCTAF  ...   PCTYRRND  PERMINTE_AVYRSEXP  \
+0  4.445207  21.71025  57.03276  ...  22.222220         234.102872   
+1  5.267598  20.44278  64.62264  ...   0.000000         219.316851   
+2  5.482922  18.95419  53.94191  ...   0.000000         420.854496   
+3  4.165093  21.63539  49.06103  ...   7.142857         159.882095   
+4  4.324902  18.77984  52.38095  ...   0.000000         606.144976   
+
+   PERMINTE_AVSAL  AVYRSEXP_AVSAL  PERSPEN_PTRATIO  PERSPEN_PCTAF  \
+0       941.68811        869.9948         96.50656      253.52242   
+1       811.41756        957.0166        107.68435      340.40609   
+2      1746.49488        884.0537        103.92435      295.75929   
+3       648.15671        839.3923         90.11341      204.34375   
+4      2752.85075        878.1943         81.22097      226.54248   
+
+   PTRATIO_PCTAF  PERMINTE_AVYRSEXP_AVSAL  PERSPEN_PTRATIO_PCTAF  const  
+0      1238.1955               13848.8985              5504.0352    1.0  
+1      1321.0664               13050.2233              6958.8468    1.0  
+2      1022.4252               25491.1232              5605.8777    1.0  
+3      1061.4545                9326.5797              4421.0568    1.0  
+4       983.7059               38280.2616              4254.4314    1.0  
+
+[5 rows x 21 columns]
+</pre></div>
+</div>
+</div>
+</div>
+<p>À présent, on ajuste un modèle linéaire généralisé, en précisant la loi binomiale comme distribution de la réponse. Après, on affiche le résultat :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">glm_binom</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">GLM</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">endog</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="n">families</span><span class="o">.</span><span class="n">Binomial</span><span class="p">())</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">glm_binom</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  Generalized Linear Model Regression Results                   
+================================================================================
+Dep. Variable:     [&#39;NABOVE&#39;, &#39;NBELOW&#39;]   No. Observations:                  303
+Model:                              GLM   Df Residuals:                      282
+Model Family:                  Binomial   Df Model:                           20
+Link Function:                    Logit   Scale:                          1.0000
+Method:                            IRLS   Log-Likelihood:                -2998.6
+Date:                  Thu, 05 Jan 2023   Deviance:                       4078.8
+Time:                          23:23:56   Pearson chi2:                 4.05e+03
+No. Iterations:                       5   Pseudo R-squ. (CS):              1.000
+Covariance Type:              nonrobust                                         
+===========================================================================================
+                              coef    std err          z      P&gt;|z|      [0.025      0.975]
+-------------------------------------------------------------------------------------------
+LOWINC                     -0.0168      0.000    -38.749      0.000      -0.018      -0.016
+PERASIAN                    0.0099      0.001     16.505      0.000       0.009       0.011
+PERBLACK                   -0.0187      0.001    -25.182      0.000      -0.020      -0.017
+PERHISP                    -0.0142      0.000    -32.818      0.000      -0.015      -0.013
+PERMINTE                    0.2545      0.030      8.498      0.000       0.196       0.313
+AVYRSEXP                    0.2407      0.057      4.212      0.000       0.129       0.353
+AVSALK                      0.0804      0.014      5.775      0.000       0.053       0.108
+PERSPENK                   -1.9522      0.317     -6.162      0.000      -2.573      -1.331
+PTRATIO                    -0.3341      0.061     -5.453      0.000      -0.454      -0.214
+PCTAF                      -0.1690      0.033     -5.169      0.000      -0.233      -0.105
+PCTCHRT                     0.0049      0.001      3.921      0.000       0.002       0.007
+PCTYRRND                   -0.0036      0.000    -15.878      0.000      -0.004      -0.003
+PERMINTE_AVYRSEXP          -0.0141      0.002     -7.391      0.000      -0.018      -0.010
+PERMINTE_AVSAL             -0.0040      0.000     -8.450      0.000      -0.005      -0.003
+AVYRSEXP_AVSAL             -0.0039      0.001     -4.059      0.000      -0.006      -0.002
+PERSPEN_PTRATIO             0.0917      0.015      6.321      0.000       0.063       0.120
+PERSPEN_PCTAF               0.0490      0.007      6.574      0.000       0.034       0.064
+PTRATIO_PCTAF               0.0080      0.001      5.362      0.000       0.005       0.011
+PERMINTE_AVYRSEXP_AVSAL     0.0002   2.99e-05      7.428      0.000       0.000       0.000
+PERSPEN_PTRATIO_PCTAF      -0.0022      0.000     -6.445      0.000      -0.003      -0.002
+const                       2.9589      1.547      1.913      0.056      -0.073       5.990
+===========================================================================================
+</pre></div>
+</div>
+</div>
+</div>
+<p>Le nombre d’épreuves binomiales (en incorporant les fréquences pour chaque observations) est :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nombre total d&#39;épreuves :&quot;</span><span class="p">,</span>  <span class="n">data</span><span class="o">.</span><span class="n">endog</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Nombre total d&#39;épreuves : 108418.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Les valeurs de la statistique de Student pour les test élémentaires d’influence de chaque variable explicatives peuvent être récupérés au travers de :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">tvalues</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LOWINC                    -38.749083
+PERASIAN                   16.504736
+PERBLACK                  -25.182189
+PERHISP                   -32.817913
+PERMINTE                    8.498271
+AVYRSEXP                    4.212479
+AVSALK                      5.774998
+PERSPENK                   -6.161911
+PTRATIO                    -5.453217
+PCTAF                      -5.168654
+PCTCHRT                     3.921200
+PCTYRRND                  -15.878260
+PERMINTE_AVYRSEXP          -7.390931
+PERMINTE_AVSAL             -8.449639
+AVYRSEXP_AVSAL             -4.059162
+PERSPEN_PTRATIO             6.321099
+PERSPEN_PCTAF               6.574347
+PTRATIO_PCTAF               5.362290
+PERMINTE_AVYRSEXP_AVSAL     7.428064
+PERSPEN_PTRATIO_PCTAF      -6.445137
+const                       1.913012
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>Il s’avère que toutes les réalisations de la statistique du test de Student sont toutes significativement supérieures à <span class="math notranslate nohighlight">\(0\)</span>, les variables explicatives ont ainsi toutes un impact sur la variable de réponse.</p>
+<p>Pour confirmer ce constat, nous fixons toutes les variables explicatives à une constante égale à leur moyenne et on varie la variable <code class="docutils literal notranslate"><span class="pre">LOWINC</span></code> (en première colonne) dénotant le pourcentage des étudiants à faibles revenus pour évaluer son influence sur le succès dans l’examen national de mathématiques.</p>
+<p>La méthode <code class="docutils literal notranslate"><span class="pre">scoreatpercentile()</span></code> de <code class="docutils literal notranslate"><span class="pre">stats</span></code> permet de calculer le nombre d’unités inférieurs à un quantile d’ordre passé en paramètre.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">m25</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">m25</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">m75</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">m75</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">exog</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="mi">75</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>L’intervalle interquartile pour le pourcentage des étudiants à faibles revenus est donc :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">resp_25</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">m25</span><span class="p">)</span>
+<span class="n">resp_75</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">m75</span><span class="p">)</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">resp_75</span> <span class="o">-</span> <span class="n">resp_25</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%2.4f%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">diff</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-11.8753%
+</pre></div>
+</div>
+</div>
+</div>
+<p>Ensuite, on représente les résultats ainsi générés dans des tracés.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nombre d&#39;observations</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">nobs</span>
+<span class="c1"># Valeurs observées de la variable expliquée NABOVE+NBELOW/2</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">endog</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">data</span><span class="o">.</span><span class="n">endog</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Valeurs ajustées</span>
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">mu</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>La fonction <code class="docutils literal notranslate"><span class="pre">abline_plot</span></code> permet de tracer des droites d’ajustement ou de régression à un nuage de points.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">statsmodels.graphics.api</span> <span class="kn">import</span> <span class="n">abline_plot</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">line_fit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">abline_plot</span><span class="p">(</span><span class="n">model_results</span><span class="o">=</span><span class="n">line_fit</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Ajustement du Modèle GLM&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Valeurs Observées&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Valeurs Ajustées&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;Valeurs Ajustées&#39;)
+</pre></div>
+</div>
+<img alt="../_images/MLG_27_1.png" src="../_images/MLG_27_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">resid_pearson</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Distribution des Résidus de l&#39;ajustement&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Résidus&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Valeurs Ajustées&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;Valeurs Ajustées&#39;)
+</pre></div>
+</div>
+<img alt="../_images/MLG_28_1.png" src="../_images/MLG_28_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">statsmodels</span> <span class="kn">import</span> <span class="n">graphics</span>
+<span class="n">graphics</span><span class="o">.</span><span class="n">gofplots</span><span class="o">.</span><span class="n">qqplot</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">resid_deviance</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/MLG_29_0.png" src="../_images/MLG_29_0.png" />
+</div>
+</div>
+</section>
+<section id="glm-avec-reponse-gaussienne">
+<h2>GLM avec Réponse Gaussienne<a class="headerlink" href="#glm-avec-reponse-gaussienne" title="Permalink to this headline">#</a></h2>
+<p>On génére <span class="math notranslate nohighlight">\(100\)</span> observations d’un modèle linéaire généralisé <span class="math notranslate nohighlight">\(\ln(y_i)=\exp(-0.03x_i+0.0001x_i^2-1)+\varepsilon_i\)</span>, et on essaie d’adapter un modèle linéaire généralisé dessus, en précisant une distribution gaussienne à la réponse avec une fonction de lien logarithmique <span class="math notranslate nohighlight">\(\log\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">54321</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">lny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mf">.03</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="mf">.0001</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span> <span class="o">+</span> <span class="mf">.001</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gauss</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">GLM</span><span class="p">(</span><span class="n">lny</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="n">families</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">families</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">log</span><span class="p">()))</span>
+<span class="n">resultats</span> <span class="o">=</span> <span class="n">gauss</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resultats</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:                      y   No. Observations:                  100
+Model:                            GLM   Df Residuals:                       97
+Model Family:                Gaussian   Df Model:                            2
+Link Function:                    log   Scale:                      1.0531e-07
+Method:                          IRLS   Log-Likelihood:                 662.92
+Date:                Thu, 05 Jan 2023   Deviance:                   1.0215e-05
+Time:                        23:23:57   Pearson chi2:                 1.02e-05
+No. Iterations:                     7   Pseudo R-squ. (CS):              1.000
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+x1            -0.0300    5.6e-06  -5361.316      0.000      -0.030      -0.030
+x2         -9.939e-05   1.05e-07   -951.091      0.000   -9.96e-05   -9.92e-05
+const          1.0003   5.39e-05   1.86e+04      0.000       1.000       1.000
+==============================================================================
+</pre></div>
+</div>
+</div>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Conclusion</p>
+<p>Le pseudo-coefficient de détermination de Cox &amp; Snell <span class="math notranslate nohighlight">\(R_{\text{CS}}^{2}=1-\left({\frac {L_{0}}{L_{M}}}\right)^{2/n}\)</span>, correspondant à l’équivalent du coefficient de détermination ordinaire pour les GLMs est égal à <span class="math notranslate nohighlight">\(1\)</span>, confirmant le modèle théorique ci-dessus.</p>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./GLM"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="GLM.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Modèles Linéaires Généralisés</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../Time%20Series/Series.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Séries Temporelles</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

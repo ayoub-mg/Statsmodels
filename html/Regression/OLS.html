@@ -1,0 +1,872 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Exemple de Régression par les Moindres Carrés (OLS) &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Exemple de Régression par les Moindres Carrés Pondérés (WLS)" href="WLS.html" />
+    <link rel="prev" title="Attributs &amp; Statistiques Résultantes" href="statistics.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="regression.html">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="statistics.html">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="GLS.html">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/GLM.html">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/MLG.html">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Decomposition.html">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/autoregression.html">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/ANOVA.html">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/Regression/OLS.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FRegression/OLS.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/Regression/OLS.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#estimation-lineaire-par-les-moindres-carres">
+   Estimation Linéaire par les Moindres Carrés
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#estimation-lineaire-en-les-parametres-par-les-moindres-carres">
+   Estimation Linéaire en les paramètres par les Moindres Carrés
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Exemple de Régression par les Moindres Carrés (OLS)</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#estimation-lineaire-par-les-moindres-carres">
+   Estimation Linéaire par les Moindres Carrés
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#estimation-lineaire-en-les-parametres-par-les-moindres-carres">
+   Estimation Linéaire en les paramètres par les Moindres Carrés
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="exemple-de-regression-par-les-moindres-carres-ols">
+<h1>Exemple de Régression par les Moindres Carrés (OLS)<a class="headerlink" href="#exemple-de-regression-par-les-moindres-carres-ols" title="Permalink to this headline">#</a></h1>
+<p>La méthode canonique du paquet <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> pour l’ajustement des modèles de régression linéaire selon le critère des moindres carrés (OLS) est la méthode <code class="docutils literal notranslate"><span class="pre">OLS</span></code>.</p>
+<p>Les paramètres pris en charge par cette fonction :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">endog</span></code> : <code class="docutils literal notranslate"><span class="pre">array-like</span></code></p>
+<blockquote>
+<div><p>Une variable de réponse endogène sous forme d’objet compatible avec les arrays à une dimension <code class="docutils literal notranslate"><span class="pre">numpy</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exog</span></code> : <code class="docutils literal notranslate"><span class="pre">array-like</span></code></p>
+<blockquote>
+<div><p>Un tableau <span class="math notranslate nohighlight">\(n\times k\)</span> où <span class="math notranslate nohighlight">\(n\)</span> est le nombre d’observations et <span class="math notranslate nohighlight">\(k\)</span> est le nombre de régresseurs. Un terme <em>intercept</em> n’est pas inclus par défaut et doit être spécifié (au moyen de <code class="docutils literal notranslate"><span class="pre">add_constant</span></code>).</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">missing</span></code> : <code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+<blockquote>
+<div><p>Les options disponibles sont <code class="docutils literal notranslate"><span class="pre">none</span></code>, <code class="docutils literal notranslate"><span class="pre">drop</span></code>, et <code class="docutils literal notranslate"><span class="pre">raise</span></code>. Si <code class="docutils literal notranslate"><span class="pre">none</span></code>, aucune vérification des valeurs <code class="docutils literal notranslate"><span class="pre">nan</span></code> n’est effectuée. <code class="docutils literal notranslate"><span class="pre">drop</span></code> fait que toutes les observations avec des <code class="docutils literal notranslate"><span class="pre">nan</span></code> sont abandonnées. <code class="docutils literal notranslate"><span class="pre">raise</span></code> signale une erreur. La valeur par défaut est <code class="docutils literal notranslate"><span class="pre">none</span></code>.</p>
+</div></blockquote>
+</li>
+</ul>
+<p>On commence par charger les paquets nécessaires, entre autres <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot</span></code> pour le traçage, <code class="docutils literal notranslate"><span class="pre">numpy</span></code> pour la manipulation des matrices et vecteurs et la génération aléatoire, ainsi que <code class="docutils literal notranslate"><span class="pre">pandas</span></code> pour le stockage des données.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Affichage avec la bibliothèque graphique intégrée à Notebook</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">from</span> <span class="nn">statsmodels.sandbox.regression.predstd</span> <span class="kn">import</span> <span class="n">wls_prediction_std</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">7890</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="estimation-lineaire-par-les-moindres-carres">
+<h2>Estimation Linéaire par les Moindres Carrés<a class="headerlink" href="#estimation-lineaire-par-les-moindres-carres" title="Permalink to this headline">#</a></h2>
+<p>On commence par générer un échantillon de <span class="math notranslate nohighlight">\(n=100\)</span> observations du modèle <span class="math notranslate nohighlight">\(y_i=1+0.1x_i+10x_i^2+\varepsilon_i\)</span> où <span class="math notranslate nohighlight">\(\varepsilon_i\sim\mathcal N(0,1)\)</span>. Cet échantillon servera de référence pour l’ajustement ci-après du modèle de régression linéaire de la variable <span class="math notranslate nohighlight">\(y\)</span> sur les variables <span class="math notranslate nohighlight">\(x\)</span> et <span class="math notranslate nohighlight">\(x^2\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Aucune constante n’est ajoutée au modèle. Il faut entasser une colonne de <span class="math notranslate nohighlight">\(1\)</span> manuellement.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span> <span class="o">+</span> <span class="n">e</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Il s’agit maintenant d’ajuster le modèle de régression linéaire par moindres carrés sur le jeu de donnéees en enchaînant la méthode <code class="docutils literal notranslate"><span class="pre">fit()</span></code> sur le modèle résultant de l’appel <code class="docutils literal notranslate"><span class="pre">OLS()</span></code>. Puis, on affiche le résultat par la méthode <code class="docutils literal notranslate"><span class="pre">summary()</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>            <td>y</td>        <th>  R-squared:         </th> <td>   1.000</td> 
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared:    </th> <td>   1.000</td> 
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>4.053e+06</td>
+</tr>
+<tr>
+  <th>Date:</th>             <td>Thu, 05 Jan 2023</td> <th>  Prob (F-statistic):</th> <td>1.92e-239</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>23:24:04</td>     <th>  Log-Likelihood:    </th> <td> -146.14</td> 
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   100</td>      <th>  AIC:               </th> <td>   298.3</td> 
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>    97</td>      <th>  BIC:               </th> <td>   306.1</td> 
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>     2</td>      <th>                     </th>     <td> </td>    
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>     <td> </td>    
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+    <td></td>       <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>const</th> <td>    0.6806</td> <td>    0.312</td> <td>    2.185</td> <td> 0.031</td> <td>    0.062</td> <td>    1.299</td>
+</tr>
+<tr>
+  <th>x1</th>    <td>    0.2175</td> <td>    0.144</td> <td>    1.510</td> <td> 0.134</td> <td>   -0.068</td> <td>    0.503</td>
+</tr>
+<tr>
+  <th>x2</th>    <td>    9.9890</td> <td>    0.014</td> <td>  716.877</td> <td> 0.000</td> <td>    9.961</td> <td>   10.017</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td> 4.487</td> <th>  Durbin-Watson:     </th> <td>   2.092</td>
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.106</td> <th>  Jarque-Bera (JB):  </th> <td>   4.075</td>
+</tr>
+<tr>
+  <th>Skew:</th>          <td> 0.335</td> <th>  Prob(JB):          </th> <td>   0.130</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td> 3.728</td> <th>  Cond. No.          </th> <td>    144.</td>
+</tr>
+</table><br/><br/>Notes:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</div></div>
+</div>
+<p>Les quantités d’intérêt peuvent être extraites directement du modèle ajusté. <code class="docutils literal notranslate"><span class="pre">dir(results)</span></code> pour obtenir une liste complète. Voici quelques exemples :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimations des Paramètres : &quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coefficient de détermination R2 : &quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">rsquared</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimations des Paramètres :  [0.6806226  0.21750693 9.98895028]
+Coefficient de détermination R2 :  0.9999880324891753
+</pre></div>
+</div>
+</div>
+</div>
+<p>Force est de constater que le coefficient de détermination est proche de 1. Cela traduit que la proportion de la variabilité observée de <span class="math notranslate nohighlight">\(y\)</span> expliquée par le modèle de régression linéaire <span class="math notranslate nohighlight">\(\beta_0+\beta_1x+\beta_2x\)</span> est plus de <span class="math notranslate nohighlight">\(99\%\)</span>, confirmant ainsi le modèle théorique de base employé pour générer l’échantillon.</p>
+<p>L’estimation des paramètres selon le critère des moindres carrés étant très précise, les paramètres retrouvés avoisinent les valeurs théoriques <span class="math notranslate nohighlight">\(\beta_0=1\)</span>, <span class="math notranslate nohighlight">\(\beta_1=0.1\)</span> et <span class="math notranslate nohighlight">\(\beta_2=10\)</span>.</p>
+</section>
+<section id="estimation-lineaire-en-les-parametres-par-les-moindres-carres">
+<h2>Estimation Linéaire en les paramètres par les Moindres Carrés<a class="headerlink" href="#estimation-lineaire-en-les-parametres-par-les-moindres-carres" title="Permalink to this headline">#</a></h2>
+<div class="tip admonition">
+<p class="admonition-title">Rappel</p>
+<p>La désignation <em>linéaire</em> renvoie à la relation entre les paramètres <span class="math notranslate nohighlight">\(\boldsymbol\beta\)</span> et la réponse <span class="math notranslate nohighlight">\(y\)</span>. <span class="math notranslate nohighlight">\(y\)</span> est une fonction linéaire par rapport à <span class="math notranslate nohighlight">\(\boldsymbol\beta\)</span>, mais pas forcément de(s) variable(s) indépendante(s) (<em>e.g.</em> le modèle <span class="math notranslate nohighlight">\(y=e^x\beta+\varepsilon\)</span> est bel et bien linéaire).</p>
+</div>
+<p>On simule pour cette section un jeu de données artificel avec une relation non-linéaire entre <span class="math notranslate nohighlight">\(x\)</span> et <span class="math notranslate nohighlight">\(y\)</span> : <span class="math notranslate nohighlight">\(y_i=5+0.5x_i+0.5\sin(x_i)-0.02(x_i-5)^2+\varepsilon_i\)</span> avec des erreurs <span class="math notranslate nohighlight">\(\varepsilon_i\sim\mathcal N(0,0.5^2)\)</span>. C’est bien un modèle linéaire, car il l’est pour les paramètres.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sig</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">5.</span><span class="p">])</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">y_true</span> <span class="o">+</span> <span class="n">sig</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res2</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">res2</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="simpletable">
+<caption>OLS Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>            <td>y</td>        <th>  R-squared:         </th> <td>   0.926</td>
+</tr>
+<tr>
+  <th>Model:</th>                   <td>OLS</td>       <th>  Adj. R-squared:    </th> <td>   0.923</td>
+</tr>
+<tr>
+  <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   398.0</td>
+</tr>
+<tr>
+  <th>Date:</th>             <td>Thu, 05 Jan 2023</td> <th>  Prob (F-statistic):</th> <td>5.23e-54</td>
+</tr>
+<tr>
+  <th>Time:</th>                 <td>23:24:04</td>     <th>  Log-Likelihood:    </th> <td> -73.136</td>
+</tr>
+<tr>
+  <th>No. Observations:</th>      <td>   100</td>      <th>  AIC:               </th> <td>   154.3</td>
+</tr>
+<tr>
+  <th>Df Residuals:</th>          <td>    96</td>      <th>  BIC:               </th> <td>   164.7</td>
+</tr>
+<tr>
+  <th>Df Model:</th>              <td>     3</td>      <th>                     </th>     <td> </td>   
+</tr>
+<tr>
+  <th>Covariance Type:</th>      <td>nonrobust</td>    <th>                     </th>     <td> </td>   
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+    <td></td>       <th>coef</th>     <th>std err</th>      <th>t</th>      <th>P>|t|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>x1</th>    <td>    0.4919</td> <td>    0.019</td> <td>   25.340</td> <td> 0.000</td> <td>    0.453</td> <td>    0.530</td>
+</tr>
+<tr>
+  <th>x2</th>    <td>    0.3458</td> <td>    0.075</td> <td>    4.610</td> <td> 0.000</td> <td>    0.197</td> <td>    0.495</td>
+</tr>
+<tr>
+  <th>x3</th>    <td>   -0.0201</td> <td>    0.002</td> <td>  -11.786</td> <td> 0.000</td> <td>   -0.023</td> <td>   -0.017</td>
+</tr>
+<tr>
+  <th>const</th> <td>    5.1014</td> <td>    0.126</td> <td>   40.531</td> <td> 0.000</td> <td>    4.852</td> <td>    5.351</td>
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+  <th>Omnibus:</th>       <td> 0.727</td> <th>  Durbin-Watson:     </th> <td>   2.516</td>
+</tr>
+<tr>
+  <th>Prob(Omnibus):</th> <td> 0.695</td> <th>  Jarque-Bera (JB):  </th> <td>   0.402</td>
+</tr>
+<tr>
+  <th>Skew:</th>          <td> 0.141</td> <th>  Prob(JB):          </th> <td>   0.818</td>
+</tr>
+<tr>
+  <th>Kurtosis:</th>      <td> 3.131</td> <th>  Cond. No.          </th> <td>    223.</td>
+</tr>
+</table><br/><br/>Notes:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</div></div>
+</div>
+<p>On peut extraire des quantités d’intérêt par la même façon :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimation des Paramètres : &quot;</span><span class="p">,</span> <span class="n">res2</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erreurs Standards :&quot;</span><span class="p">,</span> <span class="n">res2</span><span class="o">.</span><span class="n">bse</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Valeurs Prédites : &quot;</span><span class="p">,</span> <span class="n">res2</span><span class="o">.</span><span class="n">predict</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coefficient de Détermination : &quot;</span><span class="p">,</span> <span class="n">res2</span><span class="o">.</span><span class="n">rsquared</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimation des Paramètres :  [ 0.4918749   0.34579746 -0.02010405  5.10135543]
+Erreurs Standards : [0.01941121 0.07501281 0.0017057  0.1258622 ]
+Valeurs Prédites :  [ 4.5987543   4.80730058  5.01138378  5.20829662  5.39555668  5.57100744
+  5.73290593  5.87999367  6.01154786  6.12741073  6.227996    6.31427204
+  6.38772248  6.45028587  6.50427684  6.55229193  6.597104    6.64154944
+  6.68841284  6.74031364  6.79959971  6.86825173  6.94780274  7.03927571
+  7.14314196  7.25930198  7.38708951  7.52529857  7.6722326   7.8257734
+  7.9834673   8.14262497  8.3004308   8.45405742  8.60078069  8.73809052
+  8.86379296  8.9760994   9.07369939  9.15581386  9.22222686  9.27329435
+  9.30992968  9.33356646  9.34610027  9.34981152  9.34727275  9.34124394
+  9.33456029  9.33001689  9.33025503  9.33765478  9.35423816  9.38158694
+  9.42077827  9.47234085  9.5362335   9.61184676  9.69802769  9.79312683
+  9.8950652  10.0014189  10.10951773 10.21655373 10.31969545 10.41620307
+ 10.50353988 10.57947541 10.64217619 10.69028032 10.72295283 10.73991967
+ 10.74147887 10.72848838 10.7023312  10.66485912 10.61831739 10.56525344
+ 10.50841322 10.45062952 10.39470678 10.34330698 10.29884142 10.2633726
+ 10.23853034 10.22544551 10.22470401 10.23632295 10.25974996 10.29388563
+ 10.33712826 10.38743901 10.44242477 10.49943558 10.55567233 10.60830068
+ 10.6545663  10.6919069  10.71805647 10.73113744]
+Coefficient de Détermination :  0.9255894581356353
+</pre></div>
+</div>
+</div>
+</div>
+<p>Plus de <span class="math notranslate nohighlight">\(92\%\)</span> de variabilité observée de <span class="math notranslate nohighlight">\(y\)</span> est recensée par le modèle, ce dernier s’adapte significativement bien aux données. Les estimations des paramètres sont au voisinage des paramètres théoriques réels :  <span class="math notranslate nohighlight">\(\beta_1=0.5\)</span>, <span class="math notranslate nohighlight">\(\beta_2=0.5\)</span>, <span class="math notranslate nohighlight">\(\beta_3=-0.02\)</span> et <span class="math notranslate nohighlight">\(\beta_0=5\)</span>.</p>
+<p>Il est possible de tracer un graphique pour comparer les valeurs sans bruit (<em>i.e.</em> sans <span class="math notranslate nohighlight">\(\varepsilon\)</span>) du modèle aux prédictions par les moindres carrés ordinaires. Les intervalles de prédictions sont construits à l’aide de la commande <code class="docutils literal notranslate"><span class="pre">wls_prediction_std</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pfstd</span><span class="p">,</span> <span class="n">iv_sup</span><span class="p">,</span> <span class="n">iv_inf</span> <span class="o">=</span> <span class="n">wls_prediction_std</span><span class="p">(</span><span class="n">res2</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+    
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Valeurs Réelles&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Valeurs Sans Bruit&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">res2</span><span class="o">.</span><span class="n">fittedvalues</span><span class="p">,</span> <span class="s1">&#39;r--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Valeurs Ajustées&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">iv_sup</span><span class="p">,</span> <span class="s1">&#39;g--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Intervalle de Prédiction&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">iv_inf</span><span class="p">,</span> <span class="s1">&#39;g--&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x14b9166b0&gt;
+</pre></div>
+</div>
+<img alt="../_images/OLS_23_1.png" src="../_images/OLS_23_1.png" />
+</div>
+</div>
+<p>Les valeurs ajustées sont à peu près identiques aux valeurs sans bruit, ce qui confirme la significativité de l’ajustement du modèle susmentionné aux données. L’intervalle de prédiction encapsule aussi l’écrasante majorité des valeurs observée, de par sa définition.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./Regression"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="statistics.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Attributs &amp; Statistiques Résultantes</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="WLS.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Exemple de Régression par les Moindres Carrés Pondérés (WLS)</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

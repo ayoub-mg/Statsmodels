@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Modèles Linéaires Généralisés &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ajustement d’un Modèle Linéaire Généralisé" href="MLG.html" />
+    <link rel="prev" title="Exemple de Régression par les Moindres Carrés Généralisés (GLS)" href="../Regression/GLS.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/regression.html">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/statistics.html">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/OLS.html">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/GLS.html">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="MLG.html">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/Decomposition.html">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Time%20Series/autoregression.html">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/ANOVA.html">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FGLM/GLM.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/GLM/GLM.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Modèles Linéaires Généralisés</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="modeles-lineaires-generalises">
+<h1>Modèles Linéaires Généralisés<a class="headerlink" href="#modeles-lineaires-generalises" title="Permalink to this headline">#</a></h1>
+<p>Dans un <strong>modèle linéaire générale</strong> :</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}, \quad \mathbb{E} \left( \boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0},\quad \mathbb{V}{\rm ar}\left( \boldsymbol{\varepsilon} | \mathbf{X} \right) = \mathbb{E} \left( \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^T \right)= \mathbf{\Sigma} 
+\]</div>
+<p>La variable de réponse <span class="math notranslate nohighlight">\(\mathbf y\)</span> est décrite via une relation linéaire des variables explicatives + un terme de bruit.</p>
+<p>Bien que cette modélisation ait servi pour décrire une panoplie de relations, elle laisse à désirer eu égard à d’autres types de spécifications :</p>
+<ul class="simple">
+<li><p>Lorsque les variations de <span class="math notranslate nohighlight">\(\mathbf y\)</span> sont restreintes à des valeurs entières discrètes;</p></li>
+<li><p>Si la variance de <span class="math notranslate nohighlight">\(\mathbf y\)</span> dépend de la moyenne.</p></li>
+</ul>
+<p>Le <strong>modèle linéaire généralisé</strong> (GLM) est une généralisation souple des modèles linéaires généraux. Il consiste en :</p>
+<ol>
+<li><p>Un prédicteur linéaire : <span class="math notranslate nohighlight">\(\eta=\mathbf X\boldsymbol{\beta}\)</span></p></li>
+<li><p>Une fonction de lien <span class="math notranslate nohighlight">\(g\)</span>, reliant l’espérance de la réponse au prédicteur :</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle \mathbb {E} (\mathbf y|\mathbf {X} )={\boldsymbol {\mu }}=g^{-1}(\eta)=g^{-1}(\mathbf {X} {\boldsymbol {\beta }})}\]</div>
+</li>
+<li><p>Une fonction variance <span class="math notranslate nohighlight">\(\mathrm V\)</span>, qui dépend de la loi de <span class="math notranslate nohighlight">\(\mathbf y\)</span> (supposée de la famille exponentielle) :</p>
+<div class="math notranslate nohighlight">
+\[{\displaystyle \mathbb Var (\mathbf y|\mathbf {X} )=\operatorname {V} ({\boldsymbol {\mu }})=\operatorname {V} (g^{-1}(\mathbf {X} {\boldsymbol {\beta }})).}\]</div>
+</li>
+</ol>
+<p>Chaque <span class="math notranslate nohighlight">\(y_i\)</span> est supposé être généré à partir d’une distribution particulière de la famille exponentielle, où la fonction de densité de probabilité s’écrit comme suit :</p>
+<div class="math notranslate nohighlight">
+\[f(y_i) = \exp\left( \dfrac{y_i \theta_i - b(\theta_i)}{a_i(\phi)} + c(y_i, \phi) \right)
+\]</div>
+<p>où :</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\theta_i\)</span> est le paramètre de position;</p></li>
+<li><p><span class="math notranslate nohighlight">\(\phi\)</span> est le paramètre d’échelle;</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_i(⋅)\)</span>, <span class="math notranslate nohighlight">\(b(⋅)\)</span> et <span class="math notranslate nohighlight">\(c(⋅,⋅)\)</span> sont des fonctions connues.</p></li>
+</ul>
+<div class="note admonition">
+<p class="admonition-title">Remarque</p>
+<p>Un modèle linéaire où <span class="math notranslate nohighlight">\(y_i\)</span> est linéairement dépendent de <span class="math notranslate nohighlight">\(X_i\)</span> (<em>e.g.</em> <span class="math notranslate nohighlight">\(y_i=X_iβ+\varepsilon_i\)</span>) est différent d’un modèle linéaire généralisé où <span class="math notranslate nohighlight">\(μ_i\)</span> est liée linéairement à <span class="math notranslate nohighlight">\(X_i\)</span> (<em>e.g.</em> <span class="math notranslate nohighlight">\(μ_i=X_iβ\)</span>).</p>
+</div>
+<p>Nous présentons ci-dessous les fonctions de liaison et les modèles qui en résultent pour certains cas :</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Loi de <span class="math notranslate nohighlight">\(y\)</span></p></th>
+<th class="head"><p>Nom</p></th>
+<th class="head"><p>Fonction de lien</p></th>
+<th class="head"><p>Modèle</p></th>
+<th class="head"><p>Prédiction <span class="math notranslate nohighlight">\(\hatμ\)</span></p></th>
+<th class="head"><p>Valeurs de <span class="math notranslate nohighlight">\(y\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Normale</p></td>
+<td><p>Identité</p></td>
+<td><p><span class="math notranslate nohighlight">\(g(μ)=μ\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(μ=\mathbf X\boldsymbol{β}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\hatμ=\mathbf X\hat{\boldsymbol{β}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(y\in]-∞,+∞[\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Exponentielle</p></td>
+<td><p>Inverse négatif</p></td>
+<td><p><span class="math notranslate nohighlight">\(g(μ)=-μ^{-1}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(-μ^{-1}=\mathbf X\boldsymbol{β}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\hatμ=-\left(\mathbf X\hat{\boldsymbol{β}}\right)^{-1}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(y\in[0,∞[\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Poisson</p></td>
+<td><p>Log</p></td>
+<td><p><span class="math notranslate nohighlight">\(g(μ)=\log(μ)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\log(\mu)=\mathbf X\boldsymbol{\beta}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\hat\mu=\exp(\mathbf X\hat{\boldsymbol{\beta}})\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(y\in\{0,1,2,...\}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Binomiale</p></td>
+<td><p>Logit</p></td>
+<td><p><span class="math notranslate nohighlight">\(g(\mu) = \log\left(\dfrac{\mu}{1-\mu}\right)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\log\left(\dfrac{\mu}{1-\mu}\right) = \mathbf{X} \boldsymbol{\beta}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\widehat{\mu} = \dfrac{\exp\left(\mathbf{X} \widehat{\boldsymbol{\beta}}\right)}{1 + \exp\left(\mathbf{X} \widehat{\boldsymbol{\beta}}\right)}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(y\in\{0,1\}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="tip admonition">
+<p class="admonition-title">Hypothèses du GLM</p>
+<ul class="simple">
+<li><p>La relation entre les variables dépendantes et indépendantes peut être non linéaire;</p></li>
+<li><p>La variable de réponse peut avoir une distribution non-normale;</p></li>
+<li><p>La méthode du maximum de vraisemblance peut être utilisée pour estimer les paramètres;</p></li>
+<li><p>Les erreurs sont indépendantes mais peuvent avoir une distribution non-normale.</p></li>
+</ul>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./GLM"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../Regression/GLS.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Exemple de Régression par les Moindres Carrés Généralisés (GLS)</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="MLG.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Ajustement d’un Modèle Linéaire Généralisé</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

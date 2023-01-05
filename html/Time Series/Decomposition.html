@@ -1,0 +1,1222 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Décomposition des Séries Temporelles &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Autorégressions" href="autoregression.html" />
+    <link rel="prev" title="Détection de la Saisonnalité" href="Seasonality.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/regression.html">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/statistics.html">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/OLS.html">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/GLS.html">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/GLM.html">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/MLG.html">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="autoregression.html">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/ANOVA.html">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/Time Series/Decomposition.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FTime Series/Decomposition.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/Time Series/Decomposition.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ajustement-robuste">
+   Ajustement Robuste
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#degre-du-rm-loess">
+   Degré du
+   <span class="math notranslate nohighlight">
+    \(\rm LOESS\)
+   </span>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#complexite-performance">
+   Complexité &amp; Performance
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prediction-au-moyen-de-stl">
+   Prédiction au moyen de
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     STL
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Décomposition des Séries Temporelles</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ajustement-robuste">
+   Ajustement Robuste
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#degre-du-rm-loess">
+   Degré du
+   <span class="math notranslate nohighlight">
+    \(\rm LOESS\)
+   </span>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#complexite-performance">
+   Complexité &amp; Performance
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prediction-au-moyen-de-stl">
+   Prédiction au moyen de
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     STL
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="decomposition-des-series-temporelles">
+<h1>Décomposition des Séries Temporelles<a class="headerlink" href="#decomposition-des-series-temporelles" title="Permalink to this headline">#</a></h1>
+<p>Une série temporelle peut être décomposée en trois composants : tendance, saisonnalité et résidu. Plusieurs algorithmes peuvent être employés pour extraire des lissages des estimateurs de ces trois composants d’un jeu de données constituant la réalisation d’une série chronologique, au premier rang duquel <span class="math notranslate nohighlight">\(\rm LOESS\)</span> (<em>Locally Estimated Scatterplot Smoothing</em>).</p>
+<p>Cette technique de régression non-paramètrique met en oeuvre une fonction pour capturer la variation dans un nuage de point tout en réduisant le bruit et avec des hypothèses minimales sur les relations entre les variables.</p>
+<div class="tip admonition">
+<p class="admonition-title">N.B.</p>
+<p>LOESS est très flexible, ce qui le rend idéal pour modéliser des processus complexes pour lesquels aucun modèle théorique n’existe. Cependant, elle nécessite des jeux de données assez grands et densément échantillonnés afin de produire de bons modèles.</p>
+</div>
+<p>L’outil offert par la bibliothèque <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> pour la décomposition des séries temporelles est la méthode <code class="docutils literal notranslate"><span class="pre">STL</span></code>, implémentant la régression <span class="math notranslate nohighlight">\(\rm LOESS\)</span>. Les paramètres clés de cette fonction sont :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">seasonal</span></code> : longueur du lissage de la composante saisonnière. Doit être obligatoirement impair.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trend</span></code> : longueur du lissage de la tendance, généralement environ <span class="math notranslate nohighlight">\(150\%\)</span> de <code class="docutils literal notranslate"><span class="pre">seasonal</span></code>. Doit être obligatoirement impair et supérieur à la longueur de la saisonnalité.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">low_pass</span></code> : longueur de la fenêtre d’estimation passe-bas. Correspond généralement au plus petit nombre impair plus grand que la périodicité de la série.</p></li>
+</ul>
+<p>On commence d’emblée par importer les paquets requis, notamment <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot</span></code>, <code class="docutils literal notranslate"><span class="pre">pandas</span></code> et <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, puis préparer l’environnement graphique et les données.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">pandas.plotting</span> <span class="kn">import</span> <span class="n">register_matplotlib_converters</span>
+
+<span class="n">register_matplotlib_converters</span><span class="p">()</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;darkgrid&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s2">&quot;figure&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s2">&quot;font&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Le jeu de données en question est une série des émissions quotidiennes du gaz atmosphérique CO2 à partir de janvier 1959 à décembre 1987, enregistrée dans l’observatoire de Mauna Loa à Hawaii, inspiré de l’ouvrage de <em>Cleveland, McRae, and Terpenning</em> (1990) sur <span class="math notranslate nohighlight">\(\rm LOESS\)</span>. Il présente une tendance et une saisonnalité flagrantes sur l’ensemble de l’échantillon.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">co2</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mf">315.58</span><span class="p">,</span>
+    <span class="mf">316.39</span><span class="p">,</span>
+    <span class="mf">316.79</span><span class="p">,</span>
+    <span class="mf">317.82</span><span class="p">,</span>
+    <span class="mf">318.39</span><span class="p">,</span>
+    <span class="mf">318.22</span><span class="p">,</span>
+    <span class="mf">316.68</span><span class="p">,</span>
+    <span class="mf">315.01</span><span class="p">,</span>
+    <span class="mf">314.02</span><span class="p">,</span>
+    <span class="mf">313.55</span><span class="p">,</span>
+    <span class="mf">315.02</span><span class="p">,</span>
+    <span class="mf">315.75</span><span class="p">,</span>
+    <span class="mf">316.52</span><span class="p">,</span>
+    <span class="mf">317.10</span><span class="p">,</span>
+    <span class="mf">317.79</span><span class="p">,</span>
+    <span class="mf">319.22</span><span class="p">,</span>
+    <span class="mf">320.08</span><span class="p">,</span>
+    <span class="mf">319.70</span><span class="p">,</span>
+    <span class="mf">318.27</span><span class="p">,</span>
+    <span class="mf">315.99</span><span class="p">,</span>
+    <span class="mf">314.24</span><span class="p">,</span>
+    <span class="mf">314.05</span><span class="p">,</span>
+    <span class="mf">315.05</span><span class="p">,</span>
+    <span class="mf">316.23</span><span class="p">,</span>
+    <span class="mf">316.92</span><span class="p">,</span>
+    <span class="mf">317.76</span><span class="p">,</span>
+    <span class="mf">318.54</span><span class="p">,</span>
+    <span class="mf">319.49</span><span class="p">,</span>
+    <span class="mf">320.64</span><span class="p">,</span>
+    <span class="mf">319.85</span><span class="p">,</span>
+    <span class="mf">318.70</span><span class="p">,</span>
+    <span class="mf">316.96</span><span class="p">,</span>
+    <span class="mf">315.17</span><span class="p">,</span>
+    <span class="mf">315.47</span><span class="p">,</span>
+    <span class="mf">316.19</span><span class="p">,</span>
+    <span class="mf">317.17</span><span class="p">,</span>
+    <span class="mf">318.12</span><span class="p">,</span>
+    <span class="mf">318.72</span><span class="p">,</span>
+    <span class="mf">319.79</span><span class="p">,</span>
+    <span class="mf">320.68</span><span class="p">,</span>
+    <span class="mf">321.28</span><span class="p">,</span>
+    <span class="mf">320.89</span><span class="p">,</span>
+    <span class="mf">319.79</span><span class="p">,</span>
+    <span class="mf">317.56</span><span class="p">,</span>
+    <span class="mf">316.46</span><span class="p">,</span>
+    <span class="mf">315.59</span><span class="p">,</span>
+    <span class="mf">316.85</span><span class="p">,</span>
+    <span class="mf">317.87</span><span class="p">,</span>
+    <span class="mf">318.87</span><span class="p">,</span>
+    <span class="mf">319.25</span><span class="p">,</span>
+    <span class="mf">320.13</span><span class="p">,</span>
+    <span class="mf">321.49</span><span class="p">,</span>
+    <span class="mf">322.34</span><span class="p">,</span>
+    <span class="mf">321.62</span><span class="p">,</span>
+    <span class="mf">319.85</span><span class="p">,</span>
+    <span class="mf">317.87</span><span class="p">,</span>
+    <span class="mf">316.36</span><span class="p">,</span>
+    <span class="mf">316.24</span><span class="p">,</span>
+    <span class="mf">317.13</span><span class="p">,</span>
+    <span class="mf">318.46</span><span class="p">,</span>
+    <span class="mf">319.57</span><span class="p">,</span>
+    <span class="mf">320.23</span><span class="p">,</span>
+    <span class="mf">320.89</span><span class="p">,</span>
+    <span class="mf">321.54</span><span class="p">,</span>
+    <span class="mf">322.20</span><span class="p">,</span>
+    <span class="mf">321.90</span><span class="p">,</span>
+    <span class="mf">320.42</span><span class="p">,</span>
+    <span class="mf">318.60</span><span class="p">,</span>
+    <span class="mf">316.73</span><span class="p">,</span>
+    <span class="mf">317.15</span><span class="p">,</span>
+    <span class="mf">317.94</span><span class="p">,</span>
+    <span class="mf">318.91</span><span class="p">,</span>
+    <span class="mf">319.73</span><span class="p">,</span>
+    <span class="mf">320.78</span><span class="p">,</span>
+    <span class="mf">321.23</span><span class="p">,</span>
+    <span class="mf">322.49</span><span class="p">,</span>
+    <span class="mf">322.59</span><span class="p">,</span>
+    <span class="mf">322.35</span><span class="p">,</span>
+    <span class="mf">321.61</span><span class="p">,</span>
+    <span class="mf">319.24</span><span class="p">,</span>
+    <span class="mf">318.23</span><span class="p">,</span>
+    <span class="mf">317.76</span><span class="p">,</span>
+    <span class="mf">319.36</span><span class="p">,</span>
+    <span class="mf">319.50</span><span class="p">,</span>
+    <span class="mf">320.35</span><span class="p">,</span>
+    <span class="mf">321.40</span><span class="p">,</span>
+    <span class="mf">322.22</span><span class="p">,</span>
+    <span class="mf">323.45</span><span class="p">,</span>
+    <span class="mf">323.80</span><span class="p">,</span>
+    <span class="mf">323.50</span><span class="p">,</span>
+    <span class="mf">322.16</span><span class="p">,</span>
+    <span class="mf">320.09</span><span class="p">,</span>
+    <span class="mf">318.26</span><span class="p">,</span>
+    <span class="mf">317.66</span><span class="p">,</span>
+    <span class="mf">319.47</span><span class="p">,</span>
+    <span class="mf">320.70</span><span class="p">,</span>
+    <span class="mf">322.06</span><span class="p">,</span>
+    <span class="mf">322.23</span><span class="p">,</span>
+    <span class="mf">322.78</span><span class="p">,</span>
+    <span class="mf">324.10</span><span class="p">,</span>
+    <span class="mf">324.63</span><span class="p">,</span>
+    <span class="mf">323.79</span><span class="p">,</span>
+    <span class="mf">322.34</span><span class="p">,</span>
+    <span class="mf">320.73</span><span class="p">,</span>
+    <span class="mf">319.00</span><span class="p">,</span>
+    <span class="mf">318.99</span><span class="p">,</span>
+    <span class="mf">320.41</span><span class="p">,</span>
+    <span class="mf">321.68</span><span class="p">,</span>
+    <span class="mf">322.30</span><span class="p">,</span>
+    <span class="mf">322.89</span><span class="p">,</span>
+    <span class="mf">323.59</span><span class="p">,</span>
+    <span class="mf">324.65</span><span class="p">,</span>
+    <span class="mf">325.30</span><span class="p">,</span>
+    <span class="mf">325.15</span><span class="p">,</span>
+    <span class="mf">323.88</span><span class="p">,</span>
+    <span class="mf">321.80</span><span class="p">,</span>
+    <span class="mf">319.99</span><span class="p">,</span>
+    <span class="mf">319.86</span><span class="p">,</span>
+    <span class="mf">320.88</span><span class="p">,</span>
+    <span class="mf">322.36</span><span class="p">,</span>
+    <span class="mf">323.59</span><span class="p">,</span>
+    <span class="mf">324.23</span><span class="p">,</span>
+    <span class="mf">325.34</span><span class="p">,</span>
+    <span class="mf">326.33</span><span class="p">,</span>
+    <span class="mf">327.03</span><span class="p">,</span>
+    <span class="mf">326.24</span><span class="p">,</span>
+    <span class="mf">325.39</span><span class="p">,</span>
+    <span class="mf">323.16</span><span class="p">,</span>
+    <span class="mf">321.87</span><span class="p">,</span>
+    <span class="mf">321.31</span><span class="p">,</span>
+    <span class="mf">322.34</span><span class="p">,</span>
+    <span class="mf">323.74</span><span class="p">,</span>
+    <span class="mf">324.61</span><span class="p">,</span>
+    <span class="mf">325.58</span><span class="p">,</span>
+    <span class="mf">326.55</span><span class="p">,</span>
+    <span class="mf">327.81</span><span class="p">,</span>
+    <span class="mf">327.82</span><span class="p">,</span>
+    <span class="mf">327.53</span><span class="p">,</span>
+    <span class="mf">326.29</span><span class="p">,</span>
+    <span class="mf">324.66</span><span class="p">,</span>
+    <span class="mf">323.12</span><span class="p">,</span>
+    <span class="mf">323.09</span><span class="p">,</span>
+    <span class="mf">324.01</span><span class="p">,</span>
+    <span class="mf">325.10</span><span class="p">,</span>
+    <span class="mf">326.12</span><span class="p">,</span>
+    <span class="mf">326.62</span><span class="p">,</span>
+    <span class="mf">327.16</span><span class="p">,</span>
+    <span class="mf">327.94</span><span class="p">,</span>
+    <span class="mf">329.15</span><span class="p">,</span>
+    <span class="mf">328.79</span><span class="p">,</span>
+    <span class="mf">327.53</span><span class="p">,</span>
+    <span class="mf">325.65</span><span class="p">,</span>
+    <span class="mf">323.60</span><span class="p">,</span>
+    <span class="mf">323.78</span><span class="p">,</span>
+    <span class="mf">325.13</span><span class="p">,</span>
+    <span class="mf">326.26</span><span class="p">,</span>
+    <span class="mf">326.93</span><span class="p">,</span>
+    <span class="mf">327.84</span><span class="p">,</span>
+    <span class="mf">327.96</span><span class="p">,</span>
+    <span class="mf">329.93</span><span class="p">,</span>
+    <span class="mf">330.25</span><span class="p">,</span>
+    <span class="mf">329.24</span><span class="p">,</span>
+    <span class="mf">328.13</span><span class="p">,</span>
+    <span class="mf">326.42</span><span class="p">,</span>
+    <span class="mf">324.97</span><span class="p">,</span>
+    <span class="mf">325.29</span><span class="p">,</span>
+    <span class="mf">326.56</span><span class="p">,</span>
+    <span class="mf">327.73</span><span class="p">,</span>
+    <span class="mf">328.73</span><span class="p">,</span>
+    <span class="mf">329.70</span><span class="p">,</span>
+    <span class="mf">330.46</span><span class="p">,</span>
+    <span class="mf">331.70</span><span class="p">,</span>
+    <span class="mf">332.66</span><span class="p">,</span>
+    <span class="mf">332.22</span><span class="p">,</span>
+    <span class="mf">331.02</span><span class="p">,</span>
+    <span class="mf">329.39</span><span class="p">,</span>
+    <span class="mf">327.58</span><span class="p">,</span>
+    <span class="mf">327.27</span><span class="p">,</span>
+    <span class="mf">328.30</span><span class="p">,</span>
+    <span class="mf">328.81</span><span class="p">,</span>
+    <span class="mf">329.44</span><span class="p">,</span>
+    <span class="mf">330.89</span><span class="p">,</span>
+    <span class="mf">331.62</span><span class="p">,</span>
+    <span class="mf">332.85</span><span class="p">,</span>
+    <span class="mf">333.29</span><span class="p">,</span>
+    <span class="mf">332.44</span><span class="p">,</span>
+    <span class="mf">331.35</span><span class="p">,</span>
+    <span class="mf">329.58</span><span class="p">,</span>
+    <span class="mf">327.58</span><span class="p">,</span>
+    <span class="mf">327.55</span><span class="p">,</span>
+    <span class="mf">328.56</span><span class="p">,</span>
+    <span class="mf">329.73</span><span class="p">,</span>
+    <span class="mf">330.45</span><span class="p">,</span>
+    <span class="mf">330.98</span><span class="p">,</span>
+    <span class="mf">331.63</span><span class="p">,</span>
+    <span class="mf">332.88</span><span class="p">,</span>
+    <span class="mf">333.63</span><span class="p">,</span>
+    <span class="mf">333.53</span><span class="p">,</span>
+    <span class="mf">331.90</span><span class="p">,</span>
+    <span class="mf">330.08</span><span class="p">,</span>
+    <span class="mf">328.59</span><span class="p">,</span>
+    <span class="mf">328.31</span><span class="p">,</span>
+    <span class="mf">329.44</span><span class="p">,</span>
+    <span class="mf">330.64</span><span class="p">,</span>
+    <span class="mf">331.62</span><span class="p">,</span>
+    <span class="mf">332.45</span><span class="p">,</span>
+    <span class="mf">333.36</span><span class="p">,</span>
+    <span class="mf">334.46</span><span class="p">,</span>
+    <span class="mf">334.84</span><span class="p">,</span>
+    <span class="mf">334.29</span><span class="p">,</span>
+    <span class="mf">333.04</span><span class="p">,</span>
+    <span class="mf">330.88</span><span class="p">,</span>
+    <span class="mf">329.23</span><span class="p">,</span>
+    <span class="mf">328.83</span><span class="p">,</span>
+    <span class="mf">330.18</span><span class="p">,</span>
+    <span class="mf">331.50</span><span class="p">,</span>
+    <span class="mf">332.80</span><span class="p">,</span>
+    <span class="mf">333.22</span><span class="p">,</span>
+    <span class="mf">334.54</span><span class="p">,</span>
+    <span class="mf">335.82</span><span class="p">,</span>
+    <span class="mf">336.45</span><span class="p">,</span>
+    <span class="mf">335.97</span><span class="p">,</span>
+    <span class="mf">334.65</span><span class="p">,</span>
+    <span class="mf">332.40</span><span class="p">,</span>
+    <span class="mf">331.28</span><span class="p">,</span>
+    <span class="mf">330.73</span><span class="p">,</span>
+    <span class="mf">332.05</span><span class="p">,</span>
+    <span class="mf">333.54</span><span class="p">,</span>
+    <span class="mf">334.65</span><span class="p">,</span>
+    <span class="mf">335.06</span><span class="p">,</span>
+    <span class="mf">336.32</span><span class="p">,</span>
+    <span class="mf">337.39</span><span class="p">,</span>
+    <span class="mf">337.66</span><span class="p">,</span>
+    <span class="mf">337.56</span><span class="p">,</span>
+    <span class="mf">336.24</span><span class="p">,</span>
+    <span class="mf">334.39</span><span class="p">,</span>
+    <span class="mf">332.43</span><span class="p">,</span>
+    <span class="mf">332.22</span><span class="p">,</span>
+    <span class="mf">333.61</span><span class="p">,</span>
+    <span class="mf">334.78</span><span class="p">,</span>
+    <span class="mf">335.88</span><span class="p">,</span>
+    <span class="mf">336.43</span><span class="p">,</span>
+    <span class="mf">337.61</span><span class="p">,</span>
+    <span class="mf">338.53</span><span class="p">,</span>
+    <span class="mf">339.06</span><span class="p">,</span>
+    <span class="mf">338.92</span><span class="p">,</span>
+    <span class="mf">337.39</span><span class="p">,</span>
+    <span class="mf">335.72</span><span class="p">,</span>
+    <span class="mf">333.64</span><span class="p">,</span>
+    <span class="mf">333.65</span><span class="p">,</span>
+    <span class="mf">335.07</span><span class="p">,</span>
+    <span class="mf">336.53</span><span class="p">,</span>
+    <span class="mf">337.82</span><span class="p">,</span>
+    <span class="mf">338.19</span><span class="p">,</span>
+    <span class="mf">339.89</span><span class="p">,</span>
+    <span class="mf">340.56</span><span class="p">,</span>
+    <span class="mf">341.22</span><span class="p">,</span>
+    <span class="mf">340.92</span><span class="p">,</span>
+    <span class="mf">339.26</span><span class="p">,</span>
+    <span class="mf">337.27</span><span class="p">,</span>
+    <span class="mf">335.66</span><span class="p">,</span>
+    <span class="mf">335.54</span><span class="p">,</span>
+    <span class="mf">336.71</span><span class="p">,</span>
+    <span class="mf">337.79</span><span class="p">,</span>
+    <span class="mf">338.79</span><span class="p">,</span>
+    <span class="mf">340.06</span><span class="p">,</span>
+    <span class="mf">340.93</span><span class="p">,</span>
+    <span class="mf">342.02</span><span class="p">,</span>
+    <span class="mf">342.65</span><span class="p">,</span>
+    <span class="mf">341.80</span><span class="p">,</span>
+    <span class="mf">340.01</span><span class="p">,</span>
+    <span class="mf">337.94</span><span class="p">,</span>
+    <span class="mf">336.17</span><span class="p">,</span>
+    <span class="mf">336.28</span><span class="p">,</span>
+    <span class="mf">337.76</span><span class="p">,</span>
+    <span class="mf">339.05</span><span class="p">,</span>
+    <span class="mf">340.18</span><span class="p">,</span>
+    <span class="mf">341.04</span><span class="p">,</span>
+    <span class="mf">342.16</span><span class="p">,</span>
+    <span class="mf">343.01</span><span class="p">,</span>
+    <span class="mf">343.64</span><span class="p">,</span>
+    <span class="mf">342.91</span><span class="p">,</span>
+    <span class="mf">341.72</span><span class="p">,</span>
+    <span class="mf">339.52</span><span class="p">,</span>
+    <span class="mf">337.75</span><span class="p">,</span>
+    <span class="mf">337.68</span><span class="p">,</span>
+    <span class="mf">339.14</span><span class="p">,</span>
+    <span class="mf">340.37</span><span class="p">,</span>
+    <span class="mf">341.32</span><span class="p">,</span>
+    <span class="mf">342.45</span><span class="p">,</span>
+    <span class="mf">343.05</span><span class="p">,</span>
+    <span class="mf">344.91</span><span class="p">,</span>
+    <span class="mf">345.77</span><span class="p">,</span>
+    <span class="mf">345.30</span><span class="p">,</span>
+    <span class="mf">343.98</span><span class="p">,</span>
+    <span class="mf">342.41</span><span class="p">,</span>
+    <span class="mf">339.89</span><span class="p">,</span>
+    <span class="mf">340.03</span><span class="p">,</span>
+    <span class="mf">341.19</span><span class="p">,</span>
+    <span class="mf">342.87</span><span class="p">,</span>
+    <span class="mf">343.74</span><span class="p">,</span>
+    <span class="mf">344.55</span><span class="p">,</span>
+    <span class="mf">345.28</span><span class="p">,</span>
+    <span class="mf">347.00</span><span class="p">,</span>
+    <span class="mf">347.37</span><span class="p">,</span>
+    <span class="mf">346.74</span><span class="p">,</span>
+    <span class="mf">345.36</span><span class="p">,</span>
+    <span class="mf">343.19</span><span class="p">,</span>
+    <span class="mf">340.97</span><span class="p">,</span>
+    <span class="mf">341.20</span><span class="p">,</span>
+    <span class="mf">342.76</span><span class="p">,</span>
+    <span class="mf">343.96</span><span class="p">,</span>
+    <span class="mf">344.82</span><span class="p">,</span>
+    <span class="mf">345.82</span><span class="p">,</span>
+    <span class="mf">347.24</span><span class="p">,</span>
+    <span class="mf">348.09</span><span class="p">,</span>
+    <span class="mf">348.66</span><span class="p">,</span>
+    <span class="mf">347.90</span><span class="p">,</span>
+    <span class="mf">346.27</span><span class="p">,</span>
+    <span class="mf">344.21</span><span class="p">,</span>
+    <span class="mf">342.88</span><span class="p">,</span>
+    <span class="mf">342.58</span><span class="p">,</span>
+    <span class="mf">343.99</span><span class="p">,</span>
+    <span class="mf">345.31</span><span class="p">,</span>
+    <span class="mf">345.98</span><span class="p">,</span>
+    <span class="mf">346.72</span><span class="p">,</span>
+    <span class="mf">347.63</span><span class="p">,</span>
+    <span class="mf">349.24</span><span class="p">,</span>
+    <span class="mf">349.83</span><span class="p">,</span>
+    <span class="mf">349.10</span><span class="p">,</span>
+    <span class="mf">347.52</span><span class="p">,</span>
+    <span class="mf">345.43</span><span class="p">,</span>
+    <span class="mf">344.48</span><span class="p">,</span>
+    <span class="mf">343.89</span><span class="p">,</span>
+    <span class="mf">345.29</span><span class="p">,</span>
+    <span class="mf">346.54</span><span class="p">,</span>
+    <span class="mf">347.66</span><span class="p">,</span>
+    <span class="mf">348.07</span><span class="p">,</span>
+    <span class="mf">349.12</span><span class="p">,</span>
+    <span class="mf">350.55</span><span class="p">,</span>
+    <span class="mf">351.34</span><span class="p">,</span>
+    <span class="mf">350.80</span><span class="p">,</span>
+    <span class="mf">349.10</span><span class="p">,</span>
+    <span class="mf">347.54</span><span class="p">,</span>
+    <span class="mf">346.20</span><span class="p">,</span>
+    <span class="mf">346.20</span><span class="p">,</span>
+    <span class="mf">347.44</span><span class="p">,</span>
+    <span class="mf">348.67</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">co2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">co2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;1-1-1959&quot;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">co2</span><span class="p">),</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;M&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CO2&quot;</span><span class="p">)</span>
+<span class="n">co2</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count    348.000000
+mean     330.123879
+std       10.059747
+min      313.550000
+25%      321.302500
+50%      328.820000
+75%      338.002500
+max      351.340000
+Name: CO2, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>La décomposition nécessite un seul argument, la série de données. Si la série n’a pas de fréquence, il faut spécifier la période <code class="docutils literal notranslate"><span class="pre">period</span></code>. La valeur par défaut de <code class="docutils literal notranslate"><span class="pre">seasonal</span></code> est 7.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">statsmodels.tsa.seasonal</span> <span class="kn">import</span> <span class="n">STL</span>
+<span class="n">stl</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">co2</span><span class="p">,</span> <span class="n">seasonal</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">stl</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="ajustement-robuste">
+<h2>Ajustement Robuste<a class="headerlink" href="#ajustement-robuste" title="Permalink to this headline">#</a></h2>
+<p>Spécifier le paramètre <code class="docutils literal notranslate"><span class="pre">robuste</span></code> permet d’utiliser une fonction de pondération dépendant des données qui repondère les données lors de l’estimation de la <span class="math notranslate nohighlight">\(\rm LOESS\)</span> (donnant ainsi <span class="math notranslate nohighlight">\(\rm LOWESS\)</span>). L’utilisation de l’estimation robuste permet au modèle de tolérer des erreurs plus importantes comme celles visibles sur le graphique du bas ci-dessus.</p>
+<p>Nous utilisons ici une série qui mesure la production d’équipements électriques dans l’UE.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">statsmodels.datasets</span> <span class="kn">import</span> <span class="n">elec_equip</span> <span class="k">as</span> <span class="n">ds</span>
+
+<span class="n">elec_equip</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">load</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Ensuite, nous estimons le modèle avec et sans pondération robuste. La différence est mineure et est plus prononcée pendant la crise financière de 2008. L’estimation non robuste attribue des poids égaux à toutes les observations et produit donc des erreurs plus faibles, en moyenne. Les pondérations varient entre 0 et 1.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_stl_plot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">legend</span><span class="p">):</span>
+    <span class="n">axs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">get_axes</span><span class="p">()</span>
+    <span class="n">comps</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;trend&quot;</span><span class="p">,</span> <span class="s2">&quot;seasonal&quot;</span><span class="p">,</span> <span class="s2">&quot;resid&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">comps</span><span class="p">):</span>
+        <span class="n">series</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">comp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;resid&quot;</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;trend&quot;</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">legend</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+<span class="n">stl</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">elec_equip</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">res_robust</span> <span class="o">=</span> <span class="n">stl</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">res_robust</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">res_non_robust</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">elec_equip</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">add_stl_plot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">res_non_robust</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Robuste&quot;</span><span class="p">,</span> <span class="s2">&quot;Non-Robuste&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Decomposition_14_0.png" src="../_images/Decomposition_14_0.png" />
+</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Conclusion</p>
+<p>L’ajustement robuste est clairement plus performant, dès lors qu’il reflète mieux la tendance de la série temporelle étant donnée une anomalie dans les observations.</p>
+</div>
+</section>
+<section id="degre-du-rm-loess">
+<h2>Degré du <span class="math notranslate nohighlight">\(\rm LOESS\)</span><a class="headerlink" href="#degre-du-rm-loess" title="Permalink to this headline">#</a></h2>
+<p>La configuration par défaut estime le modèle <span class="math notranslate nohighlight">\(\rm LOESS\)</span> avec à la fois une constante et une tendance. Ceci peut être modifié pour n’inclure qu’une constante en spécifiant <code class="docutils literal notranslate"><span class="pre">COMPONENT_deg</span></code> à 0. Ici, le degré a peu d’influence, sauf pour la tendance autour de la crise financière de 2008.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stl</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">elec_equip</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">seasonal_deg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">trend_deg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">low_pass_deg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">res_deg_0</span> <span class="o">=</span> <span class="n">stl</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">res_robust</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">add_stl_plot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">res_deg_0</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Degré 1&quot;</span><span class="p">,</span> <span class="s2">&quot;Degré 0&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Decomposition_18_0.png" src="../_images/Decomposition_18_0.png" />
+</div>
+</div>
+</section>
+<section id="complexite-performance">
+<h2>Complexité &amp; Performance<a class="headerlink" href="#complexite-performance" title="Permalink to this headline">#</a></h2>
+<p>Trois options peuvent être utilisées pour réduire le coût calculatoire de la décomposition <code class="docutils literal notranslate"><span class="pre">STL</span></code> : <code class="docutils literal notranslate"><span class="pre">seasonal_jump</span></code>, <code class="docutils literal notranslate"><span class="pre">trend_jump</span></code> et <code class="docutils literal notranslate"><span class="pre">low_pass_jump</span></code>.</p>
+<p>Lorsque ces valeurs sont différentes de zéro, <span class="math notranslate nohighlight">\(\rm LOESS\)</span> de la composante <code class="docutils literal notranslate"><span class="pre">COMPONENT</span></code> est estimé uniquement à partir des observations <code class="docutils literal notranslate"><span class="pre">COMPONENT_jump</span></code>, et une interpolation linéaire est effectuée entre les points. Ces valeurs ne devraient normalement pas être supérieures à <span class="math notranslate nohighlight">\(10-20\%\)</span> de la taille de <code class="docutils literal notranslate"><span class="pre">seasonal</span></code>, <code class="docutils literal notranslate"><span class="pre">trend</span></code> ou <code class="docutils literal notranslate"><span class="pre">low_pass</span></code>, respectivement.</p>
+<p>L’exemple ci-dessous montre comment ceux-ci peuvent réduire le coût de calcul d’un facteur de 15 fois en utilisant des données générées avec une tendance cosinusoïdale à basse fréquence et un modèle saisonnier sinusoïdal.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mh">0xA4FD94BC</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
+<span class="n">period</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="n">tau</span><span class="p">)</span>
+<span class="n">seasonal</span> <span class="o">=</span> <span class="n">period</span> <span class="o">+</span> <span class="p">((</span><span class="n">period</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Obligatoirement impair!</span>
+<span class="n">e</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">rs</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="n">tau</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="n">period</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">e</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Données Simulées&quot;</span><span class="p">)</span>
+<span class="n">xlim</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Decomposition_22_0.png" src="../_images/Decomposition_22_0.png" />
+</div>
+</div>
+<p>Tout d’abord, le modèle de base est estimé avec tous les sauts égaux à 1.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="n">period</span><span class="p">,</span> <span class="n">seasonal</span><span class="o">=</span><span class="n">seasonal</span><span class="p">)</span>
+<span class="o">%</span><span class="k">timeit</span> mod.fit()
+<span class="n">res</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">resid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>238 ms ± 577 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+</pre></div>
+</div>
+<img alt="../_images/Decomposition_24_1.png" src="../_images/Decomposition_24_1.png" />
+</div>
+</div>
+<p>Les sauts sont tous fixés à <span class="math notranslate nohighlight">\(15\%\)</span> de la longueur de leur fenêtre. L’interpolation linéaire limitée fait peu de différence dans l’ajustement du modèle.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">low_pass_jump</span> <span class="o">=</span> <span class="n">seasonal_jump</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="p">(</span><span class="n">period</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">trend_jump</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">period</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">mod</span> <span class="o">=</span> <span class="n">STL</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">period</span><span class="o">=</span><span class="n">period</span><span class="p">,</span><span class="n">seasonal</span><span class="o">=</span><span class="n">seasonal</span><span class="p">,</span><span class="n">seasonal_jump</span><span class="o">=</span><span class="n">seasonal_jump</span><span class="p">,</span><span class="n">trend_jump</span><span class="o">=</span><span class="n">trend_jump</span><span class="p">,</span><span class="n">low_pass_jump</span><span class="o">=</span><span class="n">low_pass_jump</span><span class="p">,)</span>
+<span class="o">%</span><span class="k">timeit</span> mod.fit()
+<span class="n">res</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">resid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16.7 ms ± 37.2 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</pre></div>
+</div>
+<img alt="../_images/Decomposition_26_1.png" src="../_images/Decomposition_26_1.png" />
+</div>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Bilan</p>
+<p>Les options susmentionnées améliorent significativement le temps d’exécution de la décomposition, et ce même pour des sauts très faibles.</p>
+</div>
+</section>
+<section id="prediction-au-moyen-de-stl">
+<h2>Prédiction au moyen de <code class="docutils literal notranslate"><span class="pre">STL</span></code><a class="headerlink" href="#prediction-au-moyen-de-stl" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">STLForecast</span></code> simplifie le processus de décomposition de la STL pour supprimer les saisonnalités et ensuite utiliser un modèle de série temporelle standard pour prévoir la tendance et les composantes cycliques.</p>
+<p>Dans le cas envisagé, on emploie <code class="docutils literal notranslate"><span class="pre">STL</span></code> pour traiter la saisonnalité, puis un modèle <span class="math notranslate nohighlight">\(\mathrm{ARIMA}(1,1,0)\)</span> pour modéliser les données désaisonnalisées.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">statsmodels.tsa.arima.model</span> <span class="kn">import</span> <span class="n">ARIMA</span>
+<span class="kn">from</span> <span class="nn">statsmodels.tsa.forecasting.stl</span> <span class="kn">import</span> <span class="n">STLForecast</span>
+
+<span class="n">elec_equip</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">freq</span> <span class="o">=</span> <span class="n">elec_equip</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">inferred_freq</span>
+<span class="n">stlf</span> <span class="o">=</span> <span class="n">STLForecast</span><span class="p">(</span><span class="n">elec_equip</span><span class="p">,</span> <span class="n">ARIMA</span><span class="p">,</span> <span class="n">model_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">trend</span><span class="o">=</span><span class="s2">&quot;t&quot;</span><span class="p">))</span>
+<span class="n">stlf_res</span> <span class="o">=</span> <span class="n">stlf</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+
+<span class="n">forecast</span> <span class="o">=</span> <span class="n">stlf_res</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">elec_equip</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">forecast</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Prédiction de la production des équipements électriques dans l&#39;UE&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Decomposition_30_0.png" src="../_images/Decomposition_30_0.png" />
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">summary</span></code> renvoie des informations à la fois sur le modèle de séries temporelles et la décomposition <code class="docutils literal notranslate"><span class="pre">STL</span></code> :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">stlf_res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                    STL Decomposition and SARIMAX Results                     
+==============================================================================
+Dep. Variable:                      y   No. Observations:                  257
+Model:                 ARIMA(1, 1, 0)   Log Likelihood                -522.434
+Date:                Thu, 05 Jan 2023   AIC                           1050.868
+Time:                        23:24:41   BIC                           1061.504
+Sample:                    01-01-1995   HQIC                          1055.146
+                         - 05-01-2016                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+x1             0.1171      0.118      0.995      0.320      -0.113       0.348
+ar.L1         -0.0435      0.049     -0.880      0.379      -0.140       0.053
+sigma2         3.4682      0.188     18.406      0.000       3.099       3.837
+===================================================================================
+Ljung-Box (L1) (Q):                   0.01   Jarque-Bera (JB):               223.01
+Prob(Q):                              0.92   Prob(JB):                         0.00
+Heteroskedasticity (H):               0.33   Skew:                            -0.26
+Prob(H) (two-sided):                  0.00   Kurtosis:                         7.54
+                                STL Configuration                                
+=================================================================================
+Period:                            12       Trend Length:                      23
+Seasonal:                           7       Trend deg:                          1
+Seasonal deg:                       1       Trend jump:                         1
+Seasonal jump:                      1       Low pass:                          13
+Robust:                         False       Low pass deg:                       1
+---------------------------------------------------------------------------------
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./Time Series"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="Seasonality.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Détection de la Saisonnalité</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="autoregression.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Autorégressions</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

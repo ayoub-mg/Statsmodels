@@ -1,0 +1,1202 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Autorégressions &#8212; Introduction à Statsmodels</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Analyse de la Variance (ANOVA)" href="../Statistics/ANOVA.html" />
+    <link rel="prev" title="Décomposition des Séries Temporelles" href="Decomposition.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.svg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Introduction à Statsmodels</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../propos.html">
+   Mode d’emploi
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Installation &amp; Prérequis
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../setup.html">
+   Mise en place de l’environnement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../endoexo.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     endog
+    </span>
+   </code>
+   ou
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     exog
+    </span>
+   </code>
+   ?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../import.html">
+   Système d’importation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../formulas.html">
+   Langage de Description des Modèles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modèles Linéaires &amp; Régression
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/intro1.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/regression.html">
+   Régression Linéaire
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/statistics.html">
+   Attributs &amp; Statistiques Résultantes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/OLS.html">
+   Exemple de Régression par les Moindres Carrés (OLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/WLS.html">
+   Exemple de Régression par les Moindres Carrés Pondérés (WLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Regression/GLS.html">
+   Exemple de Régression par les Moindres Carrés Généralisés (GLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/GLM.html">
+   Modèles Linéaires Généralisés
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../GLM/MLG.html">
+   Ajustement d’un Modèle Linéaire Généralisé
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Analyse des Séries Temporelles
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Series.html">
+   Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Seasonality.html">
+   Détection de la Saisonnalité
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Decomposition.html">
+   Décomposition des Séries Temporelles
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Autorégressions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Outils Statistiques
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/ANOVA.html">
+   Analyse de la Variance (ANOVA)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../Statistics/PCA.html">
+   Analyse en Composantes Principales (ACP)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/Time Series/autoregression.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FTime Series/autoregression.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/Time Series/autoregression.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#variables-indicatrices-dummy">
+   Variables Indicatrices (
+   <em>
+    Dummy
+   </em>
+   )
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#composantes-saisonnieres">
+   Composantes Saisonnières
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cas-d-ecole-production-industrielle">
+   Cas d’école : Production Industrielle
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Autorégressions</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#variables-indicatrices-dummy">
+   Variables Indicatrices (
+   <em>
+    Dummy
+   </em>
+   )
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#composantes-saisonnieres">
+   Composantes Saisonnières
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cas-d-ecole-production-industrielle">
+   Cas d’école : Production Industrielle
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="autoregressions">
+<h1>Autorégressions<a class="headerlink" href="#autoregressions" title="Permalink to this headline">#</a></h1>
+<p>Un modèle autorégressif <span class="math notranslate nohighlight">\(\mathrm{AR}(p)\)</span> est exprimé par :</p>
+<div class="math notranslate nohighlight">
+\[y_t=\delta+\phi_1y_{t-1}+...+\phi_py_{t-p}+\varepsilon_t
+\]</div>
+<p>L’outil <code class="docutils literal notranslate"><span class="pre">AutoReg</span></code> permet d’implémenter des modèles avec :</p>
+<ul class="simple">
+<li><p>Termes Déterministes (<code class="docutils literal notranslate"><span class="pre">trend</span></code>) :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> : Pas de terme déterministe;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">c</span></code> : Avec constante (par défaut);</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ct</span></code> : Avec constante et tendance temporelle;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">t</span></code> : Avec tendance temporelle uniquement;</p></li>
+</ul>
+</li>
+<li><p>Variables Indicatrices Saisonnières (<em>i.e.</em> à valeur <span class="math notranslate nohighlight">\(1\)</span> ou <span class="math notranslate nohighlight">\(0\)</span>) (<code class="docutils literal notranslate"><span class="pre">seasonal</span></code>) :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code> permet d’inclure <span class="math notranslate nohighlight">\(s-1\)</span> variables indicatrices, où <span class="math notranslate nohighlight">\(s\)</span> est la période de la série.</p></li>
+</ul>
+</li>
+<li><p>Termes Déterministes personnalisés (<code class="docutils literal notranslate"><span class="pre">deterministic</span></code>) :</p>
+<ul>
+<li><p>Prend comme valeur une instance de la classe <code class="docutils literal notranslate"><span class="pre">DeterministicProcess</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Variables Exogènes (<code class="docutils literal notranslate"><span class="pre">exog</span></code>) :</p>
+<ul>
+<li><p>Un array ou <code class="docutils literal notranslate"><span class="pre">dataframe</span></code> de variables exogènes à inclure dans le modèle.</p></li>
+</ul>
+</li>
+</ul>
+<p>La spécification complète est donc :</p>
+<div class="math notranslate nohighlight">
+\[
+y_t = \delta_0 + \delta_1 t + \phi_1 y_{t-1} + \ldots + \phi_p y_{t-p} + \sum_{i=1}^{s-1} \gamma_i d_i + \sum_{j=1}^{m} \kappa_j x_{t,j} + \epsilon_t.
+\]</div>
+<p>où :</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(d_i\)</span> est une variable saisonnière indicatrice, égale à <span class="math notranslate nohighlight">\(1\)</span> si <span class="math notranslate nohighlight">\(t\equiv i\mod s\)</span> où <span class="math notranslate nohighlight">\(s\)</span> est la période de la série. La période <span class="math notranslate nohighlight">\(0\)</span> est exclue si le modèle contient une constante.</p></li>
+<li><p><span class="math notranslate nohighlight">\(t\)</span> est une tendance.</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_{t,j}\)</span> sont des régresseurs exogènes.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\varepsilon_t\)</span> est supposé être un bruit blanc.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pandas_datareader</span> <span class="k">as</span> <span class="nn">pdr</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">statsmodels.tsa.api</span> <span class="kn">import</span> <span class="n">acf</span><span class="p">,</span> <span class="n">graphics</span><span class="p">,</span> <span class="n">pacf</span>
+<span class="kn">from</span> <span class="nn">statsmodels.tsa.ar_model</span> <span class="kn">import</span> <span class="n">AutoReg</span><span class="p">,</span> <span class="n">ar_select_order</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;darkgrid&quot;</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">register_matplotlib_converters</span><span class="p">()</span>
+<span class="c1"># Default figure size</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s2">&quot;figure&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s2">&quot;font&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>La première série étudiée sera le taux de croissance mensuelle des mises en chantier de logements aux États-Unis, qui n’a pas été corrigé des variations saisonnières. La saisonnalité est évidente compte tenu des pics et des creux réguliers observés.</p>
+<p>On met la fréquence de la série temporelle à <code class="docutils literal notranslate"><span class="pre">MS</span></code> (<em>month-start</em>) pour éviter les erreurs lors de l’utilisation d’<code class="docutils literal notranslate"><span class="pre">AutoReg</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pdr</span><span class="o">.</span><span class="n">get_data_fred</span><span class="p">(</span><span class="s2">&quot;HOUSTNSA&quot;</span><span class="p">,</span> <span class="s2">&quot;1959-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2019-06-01&quot;</span><span class="p">)</span>
+<span class="n">housing</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">HOUSTNSA</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="c1"># Multiplication par 100 pour obtenir des pourcentages</span>
+<span class="n">housing</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">housing</span><span class="o">.</span><span class="n">asfreq</span><span class="p">(</span><span class="s2">&quot;MS&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">housing</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_6_0.png" src="../_images/autoregression_6_0.png" />
+</div>
+</div>
+<p>On commence dans un premier temps par ajuster un modèle <span class="math notranslate nohighlight">\(\mathrm{AR}(3)\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span> <span class="o">=</span> <span class="n">AutoReg</span><span class="p">(</span><span class="n">housing</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">old_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            AutoReg Model Results                             
+==============================================================================
+Dep. Variable:               HOUSTNSA   No. Observations:                  725
+Model:                     AutoReg(3)   Log Likelihood               -2993.442
+Method:               Conditional MLE   S.D. of innovations             15.289
+Date:                Thu, 05 Jan 2023   AIC                           5996.884
+Time:                        23:25:07   BIC                           6019.794
+Sample:                    05-01-1959   HQIC                          6005.727
+                         - 06-01-2019                                         
+===============================================================================
+                  coef    std err          z      P&gt;|z|      [0.025      0.975]
+-------------------------------------------------------------------------------
+const           1.1228      0.573      1.961      0.050       0.000       2.245
+HOUSTNSA.L1     0.1910      0.036      5.235      0.000       0.120       0.263
+HOUSTNSA.L2     0.0058      0.037      0.155      0.877      -0.067       0.079
+HOUSTNSA.L3    -0.1939      0.036     -5.319      0.000      -0.265      -0.122
+                                    Roots                                    
+=============================================================================
+                  Real          Imaginary           Modulus         Frequency
+-----------------------------------------------------------------------------
+AR.1            0.9680           -1.3298j            1.6448           -0.1499
+AR.2            0.9680           +1.3298j            1.6448            0.1499
+AR.3           -1.9064           -0.0000j            1.9064           -0.5000
+-----------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p>La méthode <code class="docutils literal notranslate"><span class="pre">ar_select_order</span></code> permet de renvoyer les ordres -inférieurs à un ordre passé en paramètre- adéquats pour l’ajustement d’un modèle <span class="math notranslate nohighlight">\(\mathrm{AR}\)</span> à un jeu de données.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sel</span> <span class="o">=</span> <span class="n">ar_select_order</span><span class="p">(</span><span class="n">housing</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="n">old_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Les ordres possibles sont : &quot;</span><span class="p">,</span> <span class="n">sel</span><span class="o">.</span><span class="n">ar_lags</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Les ordres possibles sont :  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Tous les ordres sont possibles. On ajuste alors un modèle <span class="math notranslate nohighlight">\(\mathrm{AR}(13)\)</span> :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            AutoReg Model Results                             
+==============================================================================
+Dep. Variable:               HOUSTNSA   No. Observations:                  725
+Model:                    AutoReg(13)   Log Likelihood               -2676.157
+Method:               Conditional MLE   S.D. of innovations             10.378
+Date:                Thu, 05 Jan 2023   AIC                           5382.314
+Time:                        23:25:07   BIC                           5450.835
+Sample:                    03-01-1960   HQIC                          5408.781
+                         - 06-01-2019                                         
+================================================================================
+                   coef    std err          z      P&gt;|z|      [0.025      0.975]
+--------------------------------------------------------------------------------
+const            1.3615      0.458      2.970      0.003       0.463       2.260
+HOUSTNSA.L1     -0.2900      0.036     -8.161      0.000      -0.360      -0.220
+HOUSTNSA.L2     -0.0828      0.031     -2.652      0.008      -0.144      -0.022
+HOUSTNSA.L3     -0.0654      0.031     -2.106      0.035      -0.126      -0.005
+HOUSTNSA.L4     -0.1596      0.031     -5.166      0.000      -0.220      -0.099
+HOUSTNSA.L5     -0.0434      0.031     -1.387      0.165      -0.105       0.018
+HOUSTNSA.L6     -0.0884      0.031     -2.867      0.004      -0.149      -0.028
+HOUSTNSA.L7     -0.0556      0.031     -1.797      0.072      -0.116       0.005
+HOUSTNSA.L8     -0.1482      0.031     -4.803      0.000      -0.209      -0.088
+HOUSTNSA.L9     -0.0926      0.031     -2.960      0.003      -0.154      -0.031
+HOUSTNSA.L10    -0.1133      0.031     -3.665      0.000      -0.174      -0.053
+HOUSTNSA.L11     0.1151      0.031      3.699      0.000       0.054       0.176
+HOUSTNSA.L12     0.5352      0.031     17.133      0.000       0.474       0.596
+HOUSTNSA.L13     0.3178      0.036      8.937      0.000       0.248       0.388
+                                    Roots                                     
+==============================================================================
+                   Real          Imaginary           Modulus         Frequency
+------------------------------------------------------------------------------
+AR.1             1.0913           -0.0000j            1.0913           -0.0000
+AR.2             0.8743           -0.5018j            1.0080           -0.0829
+AR.3             0.8743           +0.5018j            1.0080            0.0829
+AR.4             0.5041           -0.8765j            1.0111           -0.1669
+AR.5             0.5041           +0.8765j            1.0111            0.1669
+AR.6             0.0056           -1.0530j            1.0530           -0.2491
+AR.7             0.0056           +1.0530j            1.0530            0.2491
+AR.8            -0.5263           -0.9335j            1.0716           -0.3317
+AR.9            -0.5263           +0.9335j            1.0716            0.3317
+AR.10           -0.9525           -0.5880j            1.1194           -0.4120
+AR.11           -0.9525           +0.5880j            1.1194            0.4120
+AR.12           -1.2928           -0.2608j            1.3189           -0.4683
+AR.13           -1.2928           +0.2608j            1.3189            0.4683
+------------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p>La méthode <code class="docutils literal notranslate"><span class="pre">plot_predict</span></code> permet de visualiser les prévisions. Ici, nous produisons un grand nombre de prévisions qui montrent la saisonnalité capturée par le modèle.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">plot_predict</span><span class="p">(</span><span class="mi">720</span><span class="p">,</span> <span class="mi">840</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_14_0.png" src="../_images/autoregression_14_0.png" />
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">plot_diagnositcs</span></code> indique si le modèle capture les caractéristiques essentielles des données.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">plot_diagnostics</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">lags</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_16_0.png" src="../_images/autoregression_16_0.png" />
+</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Conclusion</p>
+<p>Les résidus standardisés suivent selon toute vraisemblance une distribution gaussienne. Le modèle est donc adapté aux données.</p>
+</div>
+<section id="variables-indicatrices-dummy">
+<h2>Variables Indicatrices (<em>Dummy</em>)<a class="headerlink" href="#variables-indicatrices-dummy" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AutoReg</span></code> prend en charge les variables indicatrices saisonnières, lesquelles sont une manière alternative de modéliser la saisonnalité. L’inclusion des dummies raccourcit la modélisation à seulement un <span class="math notranslate nohighlight">\(\mathrm{AR}(2)\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sel</span> <span class="o">=</span> <span class="n">ar_select_order</span><span class="p">(</span><span class="n">housing</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="n">seasonal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">old_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sel</span><span class="o">.</span><span class="n">ar_lags</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            AutoReg Model Results                             
+==============================================================================
+Dep. Variable:               HOUSTNSA   No. Observations:                  725
+Model:               Seas. AutoReg(2)   Log Likelihood               -2652.556
+Method:               Conditional MLE   S.D. of innovations              9.487
+Date:                Thu, 05 Jan 2023   AIC                           5335.112
+Time:                        23:25:08   BIC                           5403.863
+Sample:                    04-01-1959   HQIC                          5361.648
+                         - 06-01-2019                                         
+===============================================================================
+                  coef    std err          z      P&gt;|z|      [0.025      0.975]
+-------------------------------------------------------------------------------
+const           1.2726      1.373      0.927      0.354      -1.418       3.963
+s(2,12)        32.6477      1.824     17.901      0.000      29.073      36.222
+s(3,12)        23.0685      2.435      9.472      0.000      18.295      27.842
+s(4,12)        10.7267      2.693      3.983      0.000       5.449      16.005
+s(5,12)         1.6792      2.100      0.799      0.424      -2.437       5.796
+s(6,12)        -4.4229      1.896     -2.333      0.020      -8.138      -0.707
+s(7,12)        -4.2113      1.824     -2.309      0.021      -7.786      -0.636
+s(8,12)        -6.4124      1.791     -3.581      0.000      -9.922      -2.902
+s(9,12)         0.1095      1.800      0.061      0.952      -3.419       3.638
+s(10,12)      -16.7511      1.814     -9.234      0.000     -20.307     -13.196
+s(11,12)      -20.7023      1.862    -11.117      0.000     -24.352     -17.053
+s(12,12)      -11.9554      1.778     -6.724      0.000     -15.440      -8.470
+HOUSTNSA.L1    -0.2953      0.037     -7.994      0.000      -0.368      -0.223
+HOUSTNSA.L2    -0.1148      0.037     -3.107      0.002      -0.187      -0.042
+                                    Roots                                    
+=============================================================================
+                  Real          Imaginary           Modulus         Frequency
+-----------------------------------------------------------------------------
+AR.1           -1.2862           -2.6564j            2.9514           -0.3218
+AR.2           -1.2862           +2.6564j            2.9514            0.3218
+-----------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p>Les variables saisonnières sont évidentes dans les prévisions qui ont une composante saisonnière non triviale dans toutes les périodes de 10 ans dans le futur :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">plot_predict</span><span class="p">(</span><span class="mi">720</span><span class="p">,</span> <span class="mi">840</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_22_0.png" src="../_images/autoregression_22_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">plot_diagnostics</span><span class="p">(</span><span class="n">lags</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_23_0.png" src="../_images/autoregression_23_0.png" />
+</div>
+</div>
+<p>Les résidus standardisés s’apparentent à une réalisation de variables gaussiennes, bien qu’ils comportent des valeurs aberrantes.</p>
+</section>
+<section id="composantes-saisonnieres">
+<h2>Composantes Saisonnières<a class="headerlink" href="#composantes-saisonnieres" title="Permalink to this headline">#</a></h2>
+<p>Bien qu’<code class="docutils literal notranslate"><span class="pre">AutoReg</span></code> ne supporte pas directement les composantes saisonnières puisqu’il utilise les moindres carrés ordinaires pour estimer les paramètres, il est possible de capturer la saisonnalité en utilisant un <span class="math notranslate nohighlight">\(\rm AR\)</span> saisonnier avec des paramètres de trop, ce qui n’impose pas de restrictions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">yoy_housing</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">HOUSTNSA</span><span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;MS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">yoy_housing</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_27_0.png" src="../_images/autoregression_27_0.png" />
+</div>
+</div>
+<p>On commence par sélectionner un modèle en utilisant la méthode naïve ne choisissant que le retard maximal. Tous les retards inférieurs sont automatiquement inclus. Le retard maximal à vérifier est fixé à <span class="math notranslate nohighlight">\(13\)</span>, car cela permet au modèle de suivre un <span class="math notranslate nohighlight">\(\rm AR\)</span> saisonnier qui comporte à la fois une composante <span class="math notranslate nohighlight">\(\mathrm{AR}(1)\)</span> à court terme et une composante <span class="math notranslate nohighlight">\(\mathrm{AR}(1)\)</span> saisonnière, de sorte que <span class="math notranslate nohighlight">\((1-\phi_s L^{12})(1-\phi_1 L)y_t = \epsilon_t\)</span>. Ainsi :</p>
+<div class="math notranslate nohighlight">
+\[y_t = \phi_1 y_{t-1} +\phi_s Y_{t-12} - \phi_1\phi_s Y_{t-13} + \epsilon_t
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sel</span> <span class="o">=</span> <span class="n">ar_select_order</span><span class="p">(</span><span class="n">yoy_housing</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="n">old_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sel</span><span class="o">.</span><span class="n">ar_lags</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+</pre></div>
+</div>
+</div>
+</div>
+<p>On constate que tous les ordres sont selectionnés. Nous pouvons mettre <code class="docutils literal notranslate"><span class="pre">glob=True</span></code> pour rechercher tous les modèles qui incluent jusqu’à 13 retards.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sel</span> <span class="o">=</span> <span class="n">ar_select_order</span><span class="p">(</span><span class="n">yoy_housing</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="n">glob</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">old_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sel</span><span class="o">.</span><span class="n">ar_lags</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1, 2, 3, 7, 12, 13]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Après avoir ajusté le modèle, nous examinons les graphiques de diagnostic qui indiquent que cette paramétrisation semble être adéquate pour capturer la variation des données.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            AutoReg Model Results                             
+==============================================================================
+Dep. Variable:               HOUSTNSA   No. Observations:                  714
+Model:             Restr. AutoReg(13)   Log Likelihood                 589.177
+Method:               Conditional MLE   S.D. of innovations              0.104
+Date:                Thu, 05 Jan 2023   AIC                          -1162.353
+Time:                        23:25:19   BIC                          -1125.933
+Sample:                    02-01-1961   HQIC                         -1148.276
+                         - 06-01-2019                                         
+================================================================================
+                   coef    std err          z      P&gt;|z|      [0.025      0.975]
+--------------------------------------------------------------------------------
+const            0.0035      0.004      0.875      0.382      -0.004       0.011
+HOUSTNSA.L1      0.5640      0.035     16.167      0.000       0.496       0.632
+HOUSTNSA.L2      0.2347      0.038      6.238      0.000       0.161       0.308
+HOUSTNSA.L3      0.2051      0.037      5.560      0.000       0.133       0.277
+HOUSTNSA.L7     -0.0903      0.030     -2.976      0.003      -0.150      -0.031
+HOUSTNSA.L12    -0.3791      0.034    -11.075      0.000      -0.446      -0.312
+HOUSTNSA.L13     0.3354      0.033     10.254      0.000       0.271       0.400
+                                    Roots                                     
+==============================================================================
+                   Real          Imaginary           Modulus         Frequency
+------------------------------------------------------------------------------
+AR.1            -1.0309           -0.2682j            1.0652           -0.4595
+AR.2            -1.0309           +0.2682j            1.0652            0.4595
+AR.3            -0.7454           -0.7417j            1.0515           -0.3754
+AR.4            -0.7454           +0.7417j            1.0515            0.3754
+AR.5            -0.3172           -1.0221j            1.0702           -0.2979
+AR.6            -0.3172           +1.0221j            1.0702            0.2979
+AR.7             0.2419           -1.0573j            1.0846           -0.2142
+AR.8             0.2419           +1.0573j            1.0846            0.2142
+AR.9             0.7840           -0.8303j            1.1420           -0.1296
+AR.10            0.7840           +0.8303j            1.1420            0.1296
+AR.11            1.0730           -0.2386j            1.0992           -0.0348
+AR.12            1.0730           +0.2386j            1.0992            0.0348
+AR.13            1.1193           -0.0000j            1.1193           -0.0000
+------------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">plot_diagnostics</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">lags</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_34_0.png" src="../_images/autoregression_34_0.png" />
+</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Remarque</p>
+<p>Il est possible d’inclure des variables saisonnières indicatrices (<em>dummies</em>), mais cela importera peu dès lors que le modèle a une fréquence annuelle.</p>
+</div>
+</section>
+<section id="cas-d-ecole-production-industrielle">
+<h2>Cas d’école : Production Industrielle<a class="headerlink" href="#cas-d-ecole-production-industrielle" title="Permalink to this headline">#</a></h2>
+<p>Cette section a trait aux prévisions à la lumière du jeu de données de l’indice de production industrielle de <code class="docutils literal notranslate"><span class="pre">pandas</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pdr</span><span class="o">.</span><span class="n">get_data_fred</span><span class="p">(</span><span class="s2">&quot;INDPRO&quot;</span><span class="p">,</span> <span class="s2">&quot;1959-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2019-06-01&quot;</span><span class="p">)</span>
+<span class="n">ind_prod</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">INDPRO</span><span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">asfreq</span><span class="p">(</span><span class="s2">&quot;MS&quot;</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+<span class="n">ind_prod</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;DATE&#39;&gt;
+</pre></div>
+</div>
+<img alt="../_images/autoregression_38_1.png" src="../_images/autoregression_38_1.png" />
+</div>
+</div>
+<p>En premier lieu, on sélectionne un modèle utilisant jusqu’à <span class="math notranslate nohighlight">\(12\)</span> retards. Un <span class="math notranslate nohighlight">\(\mathrm{AR}(13)\)</span> minimise le critère <span class="math notranslate nohighlight">\(\rm BIC\)</span> même si de nombreux coefficients sont non significatifs.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sel</span> <span class="o">=</span> <span class="n">ar_select_order</span><span class="p">(</span><span class="n">ind_prod</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="s2">&quot;bic&quot;</span><span class="p">,</span> <span class="n">old_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            AutoReg Model Results                             
+==============================================================================
+Dep. Variable:                 INDPRO   No. Observations:                  714
+Model:                    AutoReg(13)   Log Likelihood                2322.270
+Method:               Conditional MLE   S.D. of innovations              0.009
+Date:                Thu, 05 Jan 2023   AIC                          -4614.540
+Time:                        23:25:20   BIC                          -4546.252
+Sample:                    02-01-1961   HQIC                         -4588.144
+                         - 06-01-2019                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          0.0012      0.000      2.779      0.005       0.000       0.002
+INDPRO.L1      1.1582      0.035     33.196      0.000       1.090       1.227
+INDPRO.L2     -0.0824      0.053     -1.546      0.122      -0.187       0.022
+INDPRO.L3     -0.0015      0.053     -0.028      0.977      -0.105       0.102
+INDPRO.L4      0.0102      0.053      0.194      0.846      -0.093       0.114
+INDPRO.L5     -0.1339      0.053     -2.548      0.011      -0.237      -0.031
+INDPRO.L6     -0.0084      0.052     -0.161      0.872      -0.111       0.094
+INDPRO.L7      0.0556      0.052      1.065      0.287      -0.047       0.158
+INDPRO.L8     -0.0303      0.052     -0.582      0.561      -0.132       0.072
+INDPRO.L9      0.0939      0.052      1.807      0.071      -0.008       0.196
+INDPRO.L10    -0.0834      0.052     -1.604      0.109      -0.185       0.019
+INDPRO.L11     0.0019      0.052      0.037      0.971      -0.100       0.104
+INDPRO.L12    -0.3827      0.052     -7.381      0.000      -0.484      -0.281
+INDPRO.L13     0.3615      0.033     11.006      0.000       0.297       0.426
+                                    Roots                                     
+==============================================================================
+                   Real          Imaginary           Modulus         Frequency
+------------------------------------------------------------------------------
+AR.1            -1.0400           -0.2913j            1.0801           -0.4565
+AR.2            -1.0400           +0.2913j            1.0801            0.4565
+AR.3            -0.7802           -0.8045j            1.1207           -0.3726
+AR.4            -0.7802           +0.8045j            1.1207            0.3726
+AR.5            -0.2726           -1.0538j            1.0885           -0.2903
+AR.6            -0.2726           +1.0538j            1.0885            0.2903
+AR.7             0.2715           -1.0506j            1.0851           -0.2097
+AR.8             0.2715           +1.0506j            1.0851            0.2097
+AR.9             0.8010           -0.7286j            1.0828           -0.1175
+AR.10            0.8010           +0.7286j            1.0828            0.1175
+AR.11            1.0218           -0.2219j            1.0456           -0.0340
+AR.12            1.0218           +0.2219j            1.0456            0.0340
+AR.13            1.0558           -0.0000j            1.0558           -0.0000
+------------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p>On peut également utiliser une recherche globale qui permet d’introduire des retards plus longs si nécessaire, sans exiger les retards plus courts.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sel</span> <span class="o">=</span> <span class="n">ar_select_order</span><span class="p">(</span><span class="n">ind_prod</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="s2">&quot;bic&quot;</span><span class="p">,</span> <span class="n">glob</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">old_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sel</span><span class="o">.</span><span class="n">ar_lags</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1, 5, 12, 13]
+</pre></div>
+</div>
+</div>
+</div>
+<p>De nombreux retards ont été abandonnés. Le modèle indique qu’il peut y avoir une certaine saisonnalité dans les données.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res_glob</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            AutoReg Model Results                             
+==============================================================================
+Dep. Variable:                 INDPRO   No. Observations:                  714
+Model:                    AutoReg(13)   Log Likelihood                2322.270
+Method:               Conditional MLE   S.D. of innovations              0.009
+Date:                Thu, 05 Jan 2023   AIC                          -4614.540
+Time:                        23:25:30   BIC                          -4546.252
+Sample:                    02-01-1961   HQIC                         -4588.144
+                         - 06-01-2019                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          0.0012      0.000      2.779      0.005       0.000       0.002
+INDPRO.L1      1.1582      0.035     33.196      0.000       1.090       1.227
+INDPRO.L2     -0.0824      0.053     -1.546      0.122      -0.187       0.022
+INDPRO.L3     -0.0015      0.053     -0.028      0.977      -0.105       0.102
+INDPRO.L4      0.0102      0.053      0.194      0.846      -0.093       0.114
+INDPRO.L5     -0.1339      0.053     -2.548      0.011      -0.237      -0.031
+INDPRO.L6     -0.0084      0.052     -0.161      0.872      -0.111       0.094
+INDPRO.L7      0.0556      0.052      1.065      0.287      -0.047       0.158
+INDPRO.L8     -0.0303      0.052     -0.582      0.561      -0.132       0.072
+INDPRO.L9      0.0939      0.052      1.807      0.071      -0.008       0.196
+INDPRO.L10    -0.0834      0.052     -1.604      0.109      -0.185       0.019
+INDPRO.L11     0.0019      0.052      0.037      0.971      -0.100       0.104
+INDPRO.L12    -0.3827      0.052     -7.381      0.000      -0.484      -0.281
+INDPRO.L13     0.3615      0.033     11.006      0.000       0.297       0.426
+                                    Roots                                     
+==============================================================================
+                   Real          Imaginary           Modulus         Frequency
+------------------------------------------------------------------------------
+AR.1            -1.0400           -0.2913j            1.0801           -0.4565
+AR.2            -1.0400           +0.2913j            1.0801            0.4565
+AR.3            -0.7802           -0.8045j            1.1207           -0.3726
+AR.4            -0.7802           +0.8045j            1.1207            0.3726
+AR.5            -0.2726           -1.0538j            1.0885           -0.2903
+AR.6            -0.2726           +1.0538j            1.0885            0.2903
+AR.7             0.2715           -1.0506j            1.0851           -0.2097
+AR.8             0.2715           +1.0506j            1.0851            0.2097
+AR.9             0.8010           -0.7286j            1.0828           -0.1175
+AR.10            0.8010           +0.7286j            1.0828            0.1175
+AR.11            1.0218           -0.2219j            1.0456           -0.0340
+AR.12            1.0218           +0.2219j            1.0456            0.0340
+AR.13            1.0558           -0.0000j            1.0558           -0.0000
+------------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">plot_predict</span></code> peut être utilisée pour produire des graphiques de prévision avec des intervalles de confiance. Ici, on trace des prévisions commençant à la dernière observation et se poursuivant pendant <span class="math notranslate nohighlight">\(18\)</span> mois.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ind_prod</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(714,)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res_glob</span><span class="o">.</span><span class="n">plot_predict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">714</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">732</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_47_0.png" src="../_images/autoregression_47_0.png" />
+</div>
+</div>
+<p>Les prévisions du modèle complet et du modèle restreint sont très similaires. À titre indicatif, on inclut également un <span class="math notranslate nohighlight">\(\mathrm{AR}(5)\)</span> ayant une variation très différente.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res_ar</span> <span class="o">=</span> <span class="n">AutoReg</span><span class="p">(</span><span class="n">ind_prod</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">old_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;AR(5)&quot;</span><span class="p">:</span> <span class="n">res_ar</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">714</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">726</span><span class="p">),</span><span class="s2">&quot;AR(13)&quot;</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">714</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">726</span><span class="p">),</span><span class="s2">&quot;AR(13) Restreint&quot;</span><span class="p">:</span> <span class="n">res_glob</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">714</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">726</span><span class="p">),})</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_49_0.png" src="../_images/autoregression_49_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">res_glob</span><span class="o">.</span><span class="n">plot_diagnostics</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">lags</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/autoregression_50_0.png" src="../_images/autoregression_50_0.png" />
+</div>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Conclusion</p>
+<p>Les diagnostics indiquent que le modèle capture la plupart de la dynamique des données. Le corrélogramme montre une tendance à la fréquence saisonnière et donc un modèle saisonnier plus complet (type <span class="math notranslate nohighlight">\(\rm SARIMAX\)</span>) pourrait être nécessaire.</p>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./Time Series"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="Decomposition.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Décomposition des Séries Temporelles</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../Statistics/ANOVA.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Analyse de la Variance (ANOVA)</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By MARZOUG Ayoub & BENCHERIF Mounir<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
